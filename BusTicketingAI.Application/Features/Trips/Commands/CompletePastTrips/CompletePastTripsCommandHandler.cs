@@ -13,7 +13,7 @@ public class CompletePastTripsCommandHandler : IRequestHandler<CompletePastTrips
 
     public async Task<int> Handle(CompletePastTripsCommand request, CancellationToken cancellationToken)
     {
-        var currentTime = DateTime.UtcNow;
+        var currentTime = DateTime.Now;
         var pastTrips = await _tripRepository.GetPastActiveTripsAsync(currentTime, cancellationToken);
         if (!pastTrips.Any())
             return 0;
