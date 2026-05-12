@@ -15,4 +15,5 @@ public class Trip
     public Terminal OriginTerminal { get; set; } = null!;
     public Terminal DestinationTerminal { get; set; } = null!;
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public int Status { get; set; } = 1;
 }

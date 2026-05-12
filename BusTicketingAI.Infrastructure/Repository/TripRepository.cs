@@ -145,4 +145,11 @@ public class TripRepository : GenericRepository<Trip>, ITripRepository
             .Include(t => t.Bus).ThenInclude(b => b.Company)
             .FirstOrDefaultAsync(t => t.Id == tripId, cancellationToken);
     }
+
+    public async Task<List<Trip>> GetPastActiveTripsAsync(DateTime currentTime, CancellationToken cancellationToken)
+    {
+        return await _context.Trips
+            .Where(t => t.DepartureTime <= currentTime && t.Status == 1)
+            .ToListAsync(cancellationToken);
+    }
 }

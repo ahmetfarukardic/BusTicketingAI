@@ -41,7 +41,8 @@ public class CreateTripCommandHandler : IRequestHandler<CreateTripCommand, Guid>
             DestinationTerminalId = request.DestinationTerminalId,
             DepartureTime = request.DepartureDate,
             BasePrice = request.BasePrice,
-            EstimatedDuration = request.EstimatedDuration
+            EstimatedDuration = request.EstimatedDuration,
+            Status = 1
         };
 
         await _tripRepository.AddAsync(newTrip, cancellationToken);

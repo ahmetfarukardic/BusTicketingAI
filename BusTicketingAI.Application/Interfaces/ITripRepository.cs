@@ -15,4 +15,5 @@ public interface ITripRepository : IGenericRepository<Trip>
     Task<Trip?> GetTripWithBusAsync(Guid tripId, CancellationToken cancellationToken);
     Task<bool> HasUpcomingTripsByBusIdAsync(int busId, CancellationToken cancellationToken);
     Task<Trip?> GetTripWithBusAndTerminalAsync(Guid tripId, CancellationToken cancellationToken);
+    Task<List<Trip>> GetPastActiveTripsAsync(DateTime currentTime, CancellationToken cancellationToken);
 }
