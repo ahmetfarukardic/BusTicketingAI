@@ -13,7 +13,7 @@ public class GetAllBusCompaniesQueryHandler : IRequestHandler<GetAllBusCompanies
 
     public async Task<List<BusCompanyResponseDto>> Handle(GetAllBusCompaniesQuery request, CancellationToken cancellationToken)
     {
-        var companies = await _busCompanyRepository.GetAllAsync(cancellationToken);
+        var companies = await _busCompanyRepository.GetAllWithBusesAsync(cancellationToken);
         return companies.Select(c => new BusCompanyResponseDto
         {
             Id = c.Id,
