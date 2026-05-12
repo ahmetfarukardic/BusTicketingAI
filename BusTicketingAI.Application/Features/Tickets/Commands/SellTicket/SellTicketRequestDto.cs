@@ -7,4 +7,5 @@ public class SellTicketRequestDto
     public string PassengerName { get; set; } = string.Empty;
     public string PassengerTC { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public string Gender { get; set; } = string.Empty;
 }

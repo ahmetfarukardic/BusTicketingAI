@@ -31,7 +31,10 @@ public class CancelTicketCommandHandler : IRequestHandler<CancelTicketCommand, b
 
         _ticketRepository.Update(ticket);
         await _ticketRepository.SaveChangesAsync(cancellationToken);
-        await _mediator.Publish(new TicketCancelledEvent(
+        
+        if (ticket.User != null)
+        {
+            await _mediator.Publish(new TicketCancelledEvent(
             ticket.Id,
             ticket.User.Email,
             ticket.PassengerName,
@@ -42,6 +45,7 @@ public class CancelTicketCommandHandler : IRequestHandler<CancelTicketCommand, b
             ticket.SeatNumber,
             ticket.Trip.Bus.Company.Name
         ), cancellationToken);
+        }
 
         return true;
     }

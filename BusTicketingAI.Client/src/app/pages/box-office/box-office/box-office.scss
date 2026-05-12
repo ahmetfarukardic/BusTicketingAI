@@ -266,6 +266,44 @@
   transition: all 0.2s;
   user-select: none; 
   font-size: 1.1rem;
+
+  /* Başına & koyduk! Böylece hem .seat hem .occupied olanı bulacak */
+  &.occupied.gender-K {
+    background-color: #fbcfe8 !important; 
+    border-color: #ec4899 !important;
+    color: #831843 !important;
+  }
+
+  &.occupied.gender-E {
+    background-color: #bfdbfe !important; 
+    border-color: #3b82f6 !important;
+    color: #1e3a8a !important;
+  }
+
+  &.selected { 
+    background-color: #10b981 !important; 
+    border-color: #059669 !important; 
+    color: white !important; 
+    transform: scale(1.1); 
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+  }
+}
+
+.badge.gender-K { background-color: #fbcfe8 !important; color: #831843 !important; }
+.badge.gender-E { background-color: #bfdbfe !important; color: #1e3a8a !important; }
+
+/* MODAL İÇİ CİNSİYET SEÇİM BUTONLARI */
+.gender-selection-btn {
+  padding: 20px; border-radius: 12px; text-align: center; flex: 1; transition: all 0.2s ease-in-out; cursor: pointer;
+}
+.female-btn { border: 2px solid #fbcfe8; background-color: #fdf2f8; }
+.female-btn:hover:not(.disabled-gender) { background-color: #fbcfe8; transform: translateY(-3px); }
+.male-btn { border: 2px solid #bfdbfe; background-color: #eff6ff; }
+.male-btn:hover:not(.disabled-gender) { background-color: #bfdbfe; transform: translateY(-3px); }
+
+/* DEVRE DIŞI (KISITLANMIŞ) DURUM EFEKTİ */
+.disabled-gender {
+  opacity: 0.4; cursor: not-allowed; filter: grayscale(80%); pointer-events: none;
 }
 
 /* 1+2 Koltuk Düzeni İçin Koridor Boşluğu */

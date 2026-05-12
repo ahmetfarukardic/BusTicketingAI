@@ -5,19 +5,17 @@ using MediatR;
 
 namespace BusTicketingAI.Application.Features.Tickets.Commands.SellTicket;
 
-public record SellTicketCommand(Guid TripId, int SeatNumber, string PassengerName, string PassengerTC, decimal Price, int CompanyId) : IRequest<Guid>;
+public record SellTicketCommand(Guid TripId, int SeatNumber, string PassengerName, string PassengerTC, decimal Price, string Gender, int CompanyId) : IRequest<Guid>;
 
 public class SellTicketCommandHandler : IRequestHandler<SellTicketCommand, Guid>
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly ITripRepository _tripRepository;
-    private readonly IMediator _mediator;
 
-    public SellTicketCommandHandler(ITicketRepository ticketRepository, ITripRepository tripRepository, IMediator mediator)
+    public SellTicketCommandHandler(ITicketRepository ticketRepository, ITripRepository tripRepository)
     {
         _ticketRepository = ticketRepository;
         _tripRepository = tripRepository;
-        _mediator = mediator;
     }
 
     public async Task<Guid> Handle(SellTicketCommand request, CancellationToken cancellationToken)
@@ -38,25 +36,13 @@ public class SellTicketCommandHandler : IRequestHandler<SellTicketCommand, Guid>
             PassengerName = request.PassengerName,
             PassengerTC = request.PassengerTC,
             Price = request.Price,
+            Gender = request.Gender,
             Status = 1,
             CreatedAt = DateTime.UtcNow
         };
 
         await _ticketRepository.AddAsync(newTicket, cancellationToken);
         await _ticketRepository.SaveChangesAsync(cancellationToken);
-        await _mediator.Publish(new TicketPurchasedEvent(
-            newTicket.Id,
-            newTicket.User.Email, 
-            newTicket.PassengerName,
-            "PNR" + newTicket.Id.ToString().Substring(0, 6).ToUpper(), 
-            newTicket.Trip.OriginTerminal.Name,
-            newTicket.Trip.DestinationTerminal.Name,
-            newTicket.Trip.DepartureTime,
-            newTicket.SeatNumber,
-            newTicket.Price,
-            newTicket.Trip.Bus.Company.Name
-        ), cancellationToken);
-
         return newTicket.Id;
     }
 }

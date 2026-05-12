@@ -63,7 +63,7 @@ export class Trips implements OnInit {
   }
 
   submitNewTrip() {
-    const payload = this.newTripForm() as CreateTripRequest;
+    const payload = { ...this.newTripForm() } as any;
 
     if (!payload.busId || !payload.originTerminalId || !payload.destinationTerminalId || !payload.departureTime || !payload.basePrice || !payload.estimatedDuration) {
       this.alertService.error('Hata', 'Lütfen tüm alanları doldurun.');
@@ -73,6 +73,10 @@ export class Trips implements OnInit {
     if (payload.originTerminalId === payload.destinationTerminalId) {
       this.alertService.error('Hata', 'Kalkış ve Varış noktası aynı olamaz.');
       return;
+    }
+
+    if (typeof payload.departureTime === 'string' && payload.departureTime.includes(' ')) {
+      payload.departureTime = payload.departureTime.replace(' ', 'T') + ':00';
     }
 
     this.tripManagementService.createTrip(payload).subscribe({

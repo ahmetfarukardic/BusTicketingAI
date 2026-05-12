@@ -10,6 +10,7 @@ export class BoxOfficeService {
   private http = inject(HttpClient);
   private apiUrl = 'https://localhost:7202/api/companystaff';
   private terminalsUrl = 'https://localhost:7202/api/terminals';
+  private ticketsApiUrl = 'https://localhost:7202/api/tickets';
 
   getTerminals(): Observable<Terminal[]> {
     return this.http.get<Terminal[]>(this.terminalsUrl)
@@ -25,11 +26,11 @@ export class BoxOfficeService {
     return this.http.get<CompanyActiveTrip[]>(`${this.apiUrl}/active-trips`, { params });
   }
 
-  getOccupiedSeats(tripId: string): Observable<number[]> {
-    return this.http.get<number[]>(`${this.apiUrl}/trips/${tripId}/occupied-seats`)
+  getOccupiedSeats(tripId: string): Observable<{ seatNumber: number, gender: 'E' | 'K' }[]> {
+    return this.http.get<{ seatNumber: number, gender: 'E' | 'K' }[]>(`${this.apiUrl}/trips/${tripId}/occupied-seats`)
   }
 
   sellTicket(payload: SellTicketRequest): Observable<{ id: string, message: string }> {
-    return this.http.post<{ id: string, message: string }>(`${this.apiUrl}/sell`, payload);
+    return this.http.post<{ id: string, message: string }>(`${this.ticketsApiUrl}/sell`, payload);
   }
 }

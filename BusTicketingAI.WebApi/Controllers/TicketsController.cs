@@ -7,7 +7,7 @@ namespace BusTicketingAI.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,CompanyStaff")]
+[Authorize(Roles = "CompanyStaff")]
 public class TicketsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -29,6 +29,7 @@ public class TicketsController : ControllerBase
             request.PassengerName,
             request.PassengerTC,
             request.Price,
+            request.Gender,
             companyId
         );
         var ticketId = await _mediator.Send(command);

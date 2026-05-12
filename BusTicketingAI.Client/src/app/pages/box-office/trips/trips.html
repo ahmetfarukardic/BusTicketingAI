@@ -66,7 +66,7 @@
     </div>
 
     <div class="form-actions">
-      <button class="save-btn create-btn" (click)="submitNewTrip()">SEFERİ OLUŞTUR</button>
+      <button class="save-btn create-btn" [disabled]="!newTripForm().busId || !newTripForm().originTerminalId || !newTripForm().destinationTerminalId || !newTripForm().departureTime || !newTripForm().basePrice || !newTripForm().estimatedDuration" (click)="submitNewTrip()">SEFERİ OLUŞTUR</button>
     </div>
   </div>
 

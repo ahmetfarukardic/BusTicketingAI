@@ -14,6 +14,7 @@ export interface SellTicketRequest {
     passengerName: string;
     passengerTC: string;
     price: number;
+    gender: string;
 }
 
 export interface Terminal {

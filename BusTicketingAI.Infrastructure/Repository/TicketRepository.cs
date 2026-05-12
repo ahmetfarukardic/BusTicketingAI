@@ -30,7 +30,16 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
 
     public async Task<Ticket?> GetTicketWithTripAsync(Guid ticketId, CancellationToken cancellationToken)
     {
-        return await _context.Tickets.Include(t => t.Trip).ThenInclude(tr => tr.Bus).FirstOrDefaultAsync(t => t.Id == ticketId, cancellationToken);
+        return await _context.Tickets
+            .Include(t => t.User)
+            .Include(t => t.Trip)
+                .ThenInclude(tr => tr.Bus)
+                .ThenInclude(b => b.Company)
+            .Include(t => t.Trip)
+                .ThenInclude(tr => tr.OriginTerminal)
+            .Include(t => t.Trip)
+                .ThenInclude(tr => tr.DestinationTerminal)
+            .FirstOrDefaultAsync(t => t.Id == ticketId, cancellationToken);
     }
 
     public async Task<List<Ticket>> GetTicketsByTripAndCompanyAsync(Guid tripId, int companyId, CancellationToken cancellationToken)

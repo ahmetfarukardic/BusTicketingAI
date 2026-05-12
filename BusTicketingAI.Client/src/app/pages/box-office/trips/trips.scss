@@ -86,8 +86,35 @@
   .create-btn {
     padding: 1rem 3rem;
     font-size: 1.1rem;
+    font-weight: 700;
     border-radius: 8px;
+    background-color: #3b82f6; /* Modern mavi arkaplan */
+    color: white; /* Beyaz yazı */
+    border: none; /* Varsayılan siyah çerçeveyi kaldırır */
+    cursor: pointer; /* Üzerine gelince el işareti çıkarır */
+    transition: all 0.2s ease;
     box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+
+    /* Butonun üzerine gelindiğindeki hali */
+    &:hover:not(:disabled) {
+      background-color: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Butona tıklandığı anki hali */
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    /* Form eksikse butonun görüneceği kapalı (disabled) hali */
+    &:disabled {
+      background-color: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed; /* Üzerine gelince "yasak" işareti çıkarır */
+      box-shadow: none;
+      transform: none;
+    }
   }
 }
 
