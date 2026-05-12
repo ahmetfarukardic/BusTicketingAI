@@ -1,0 +1,120 @@
+<div class="public-home-container">
+
+  <!-- ÜST KISIM: HERO (Görsel ve Arama Kutusu) -->
+  <div class="hero-section">
+    <div class="hero-content fade-in-down">
+      <h1>Yolculuğun Yeni Adresi</h1>
+      <p>Türkiye'nin her yerine güvenli, konforlu ve hızlı seyahat edin.</p>
+    </div>
+
+    <!-- Arama Kutusu (Floating Box) -->
+    <div class="search-box fade-in-up">
+      <!-- Kalkış -->
+      <div class="input-group">
+        <span class="input-icon">📍</span>
+        <div class="input-wrapper">
+          <label>Nereden</label>
+          <select [(ngModel)]="searchOriginId" class="modern-select">
+            <option [ngValue]="undefined" disabled selected>İl veya İlçe Seçin</option>
+            <option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="exchange-icon">⇄</div>
+
+      <!-- Varış -->
+      <div class="input-group">
+        <span class="input-icon">🏁</span>
+        <div class="input-wrapper">
+          <label>Nereye</label>
+          <select [(ngModel)]="searchDestinationId" class="modern-select">
+            <option [ngValue]="undefined" disabled selected>İl veya İlçe Seçin</option>
+            <option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tarih -->
+      <div class="input-group date-group">
+        <span class="input-icon">📅</span>
+        <div class="input-wrapper">
+          <label>Gidiş Tarihi</label>
+          <input type="text" appFlatpickr [(ngModel)]="searchDate" class="modern-input" placeholder="Tarih Seçin">
+        </div>
+      </div>
+
+      <!-- Buton -->
+      <button class="search-btn" (click)="onSearch()">
+        <span>Sefer Bul</span>
+        <span class="btn-arrow">➔</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ALT KISIM: SEFER LİSTESİ -->
+  <div class="results-section">
+    <div class="trips-list">
+      
+      @for (trip of tripList; track trip.id) {
+        <div class="trip-card slide-in">
+          
+          <!-- 1. Firma Bilgisi -->
+          <div class="company-section">
+            <div class="company-logo">🚌</div>
+            <span class="company-name">{{ trip.companyName || 'Bilinmeyen Firma' }}</span>
+          </div>
+
+          <!-- 2. Rota ve Zaman Çizelgesi -->
+          <div class="route-section">
+            <div class="time-block">
+              <h4>{{ trip.time }}</h4>
+              <span class="city">{{ trip.from }}</span>
+            </div>
+            
+            <!-- Görsel Rota Çizgisi -->
+            <div class="journey-line">
+              <div class="dot"></div>
+              <div class="line"></div>
+              <div class="bus-icon-small">🚍</div>
+              <div class="dot"></div>
+            </div>
+
+            <div class="time-block arrival">
+              <h4>{{ trip.arrivalTime }}</h4>
+              <span class="city">{{ trip.to }}</span>
+            </div>
+          </div>
+
+          <!-- 3. Fiyat ve Aksiyon -->
+          <div class="action-section">
+            <div class="price-block">
+              <span class="price">{{ trip.price }} ₺</span>
+            </div>
+
+            @if (trip.availableSeats <= 10 && trip.availableSeats > 0) {
+              <span class="warning-badge pulse">🔥 Son {{ trip.availableSeats }} Koltuk!</span>
+            }
+
+            @if (trip.availableSeats === 0) {
+              <span class="warning-badge sold-out">❌ Tükendi</span>
+            }
+
+            <button class="select-btn" [disabled]="trip.availableSeats === 0" (click)="onTripSelect(trip.id)">
+              {{ trip.availableSeats === 0 ? 'Dolu' : 'Koltuk Seç' }}
+            </button>
+          </div>
+
+        </div>
+      } @empty {
+        <!-- Eğer liste boşsa veya henüz arama yapılmadıysa -->
+        <div class="empty-state fade-in-up">
+          <h3>Bilet aramaya başlayın!</h3>
+          <p>Lütfen yukarıdan kalkış, varış ve tarih seçerek seferleri listeleyin.</p>
+        </div>
+      }
+
+    </div>
+  </div>
+
+</div>

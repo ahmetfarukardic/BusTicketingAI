@@ -1,0 +1,28 @@
+<nav class="navbar">
+    <div class="logo" routerLink="/trips">
+        BusTicketingAI
+    </div>
+
+    <div class="nav-links">
+
+        <ng-container *ngIf="isLoggedIn(); else loggedOut">
+            <span class="welcome-text">Hoş geldin, {{ getUserName() | titlecase }}</span>
+            @if (authService.hasRole('Member')) {
+                <p-button 
+                    label="Profilim" 
+                    icon="pi pi-user" 
+                    severity="info" 
+                    [text]="true" 
+                    routerLink="/profile">
+                </p-button>
+            }
+            <button class="logout-btn" (click)="logout()">Çıkış Yap</button>
+        </ng-container>
+
+        <ng-template #loggedOut>
+            <a routerLink="/login" class="nav-link">Giriş Yap</a>
+            <a routerLink="/register" class="nav-link">Kayıt Ol</a>
+        </ng-template>
+        
+    </div>
+</nav>

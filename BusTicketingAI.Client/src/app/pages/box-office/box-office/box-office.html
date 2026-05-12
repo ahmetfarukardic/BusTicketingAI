@@ -1,0 +1,154 @@
+<div class="admin-container box-office-container">
+
+  <div class="admin-header" style="margin-bottom: 1.5rem;">
+    <h2>Gişe (Bilet Kesim) Paneli</h2>
+  </div>
+
+  <div class="company-card box-office-search-card fade-in">
+    <div class="search-form-wrapper">
+
+      <div class="search-item">
+        <span class="search-icon">📍</span>
+        <div class="form-group-combined">
+          <label>NEREDEN</label>
+          <select class="form-control-transparent" [ngModel]="filterOrigin()" (ngModelChange)="filterOrigin.set($event)">
+            <option [ngValue]="null">Şehir / Otogar Seçiniz</option>
+            @for (terminal of terminals(); track terminal.id) {
+              <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <button class="swap-button" (click)="swapCities()">⇄</button>
+
+      <div class="search-item">
+        <span class="search-icon">🏁</span>
+        <div class="form-group-combined">
+          <label>NEREYE</label>
+          <select class="form-control-transparent" [ngModel]="filterDest()" (ngModelChange)="filterDest.set($event)">
+            <option [ngValue]="null">Şehir / Otogar Seçiniz</option>
+            @for (terminal of terminals(); track terminal.id) {
+              <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="search-item date-item">
+        <span class="search-icon">📅</span>
+        <div class="form-group-combined">
+          <label>TARİH</label>
+          <input type="text" appFlatpickr class="form-control-transparent" placeholder="Tarih Seçin" [ngModel]="filterDate()" (ngModelChange)="filterDate.set($event)">
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button class="save-btn search-submit-btn" (click)="loadTrips()">SEFER BUL</button>
+        @if (filterOrigin() || filterDest() || filterDate()) {
+          <button class="cancel-btn clear-filters-btn" (click)="clearFilters()">X</button>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <div class="box-office-layout">
+    
+    <div class="trip-list-section">
+      <div class="company-list">
+        @for (trip of trips(); track trip.tripId) {
+          <div class="company-card" 
+               [class.is-selected]="selectedTrip()?.tripId === trip.tripId"
+               (click)="selectTrip(trip)">
+            
+            <div class="company-info" style="flex: 2;">
+              <h3>{{ trip.originTerminal }} ➔ {{ trip.destinationTerminal }}</h3>
+              <p class="company-id">🗓️ {{ trip.departureTime | date:'dd.MM.yyyy HH:mm' }} | 🚌 {{ trip.busPlate }}</p>
+            </div>
+            
+            <div class="company-action" style="flex: 1; justify-content: flex-end;">
+              <span class="bus-badge">
+                {{ trip.price | currency:'TRY':'symbol-narrow':'1.2-2' }}
+              </span>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state fade-in">
+            <p>Aramanıza uygun veya bugün için aktif bir sefer bulunamadı.</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (selectedTrip()) {
+      <div class="seat-map-section fade-in">
+        
+        <div class="layout-wrapper">
+          <div class="bus-layout">
+            <div class="driver-area">Direksiyon 🎡</div>
+            
+            <div class="seats-grid">
+              @for (seat of getSeatArray(selectedTrip()!.totalSeats); track seat) {
+                <div class="seat" 
+                     [class.occupied]="occupiedSeats().includes(seat)"
+                     [class.selected]="selectedSeat() === seat"
+                     [class.available]="!occupiedSeats().includes(seat) && selectedSeat() !== seat"
+                     (click)="selectSeat(seat)">
+                  {{ seat }}
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="ticket-summary">
+            <h3>Seçilen Koltuk</h3>
+            
+            <div class="selected-list">
+              @if (selectedSeat()) {
+                <span class="badge">Koltuk {{ selectedSeat() }}</span>
+              } @else {
+                <p class="empty-text">Lütfen otobüsten boş bir koltuk seçin.</p>
+              }
+            </div>
+
+            <div class="legend">
+              <div class="legend-item"><div class="box available"></div> Boş</div>
+              <div class="legend-item"><div class="box occupied"></div> Dolu</div>
+              <div class="legend-item"><div class="box selected"></div> Seçili</div>
+            </div>
+
+            @if (selectedSeat()) {
+              <div class="sell-form fade-in">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Yolcu Adı Soyadı</label>
+                    <input type="text" placeholder="Örn: Ahmet Yılmaz" class="form-control"
+                           [ngModel]="sellForm().passengerName" 
+                           (ngModelChange)="updateForm('passengerName', $event)">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>TC Kimlik No</label>
+                    <input type="text" placeholder="11 Haneli TC Kimlik No" class="form-control" maxlength="11"
+                           [ngModel]="sellForm().passengerTC" 
+                           (ngModelChange)="updateForm('passengerTC', $event)">
+                  </div>
+                </div>
+
+                <div class="summary-footer">
+                  <div class="price-row">
+                    <span>Toplam Tutar:</span>
+                    <span class="total-price">{{ selectedTrip()?.price }} ₺</span>
+                  </div>
+                  <button class="checkout-btn" (click)="sellTicket()">Bileti Kes</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>

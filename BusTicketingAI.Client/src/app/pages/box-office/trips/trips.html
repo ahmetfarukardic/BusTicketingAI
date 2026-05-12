@@ -1,0 +1,188 @@
+<div class="admin-container trips-container">
+
+  <div class="admin-header" style="margin-bottom: 1.5rem;">
+    <h2>Sefer Yönetimi</h2>
+    <p class="header-subtitle">Yeni seferler oluşturun ve mevcut filonuzu yönetin.</p>
+  </div>
+
+  <!-- YENİ SEFER OLUŞTURMA KARTI -->
+  <div class="company-card form-card fade-in">
+    <div class="card-header">
+      <span class="header-icon">✨</span>
+      <h3>Yeni Sefer Oluştur</h3>
+    </div>
+    
+    <div class="form-grid">
+      <!-- OTOBÜS SEÇİMİ -->
+      <div class="form-group">
+        <label>Otobüs Seçimi</label>
+        <select class="form-control" [ngModel]="newTripForm().busId" (ngModelChange)="updateNewTripForm('busId', $event)">
+          <option [ngValue]="undefined" disabled selected>Plaka veya Otobüs Seçiniz</option>
+          @for (bus of buses(); track bus.id) {
+            <option [ngValue]="bus.id">{{ bus.plateNumber }} (Kapasite: {{ bus.seatCapacity }})</option>
+          }
+        </select>
+      </div>
+
+      <!-- KALKIŞ NOKTASI -->
+      <div class="form-group">
+        <label>Nereden (Kalkış)</label>
+        <select class="form-control" [ngModel]="newTripForm().originTerminalId" (ngModelChange)="updateNewTripForm('originTerminalId', $event)">
+          <option [ngValue]="undefined" disabled selected>Kalkış Noktası Seçiniz</option>
+          @for (terminal of terminals(); track terminal.id) {
+            <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- VARIŞ NOKTASI -->
+      <div class="form-group">
+        <label>Nereye (Varış)</label>
+        <select class="form-control" [ngModel]="newTripForm().destinationTerminalId" (ngModelChange)="updateNewTripForm('destinationTerminalId', $event)">
+          <option [ngValue]="undefined" disabled selected>Varış Noktası Seçiniz</option>
+          @for (terminal of terminals(); track terminal.id) {
+            <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- TARİH VE SAAT -->
+      <div class="form-group">
+        <label>Kalkış Tarihi ve Saati</label>
+        <input type="text" appFlatpickr [enableTime]="true" class="form-control" placeholder="Tarih ve Saat Seçin" [ngModel]="newTripForm().departureTime" (ngModelChange)="updateNewTripForm('departureTime', $event)">
+      </div>
+
+      <!-- TABAN FİYAT -->
+      <div class="form-group">
+        <label>Bilet Fiyatı (₺)</label>
+        <input type="number" class="form-control" placeholder="Örn: 450" [ngModel]="newTripForm().basePrice" (ngModelChange)="updateNewTripForm('basePrice', $event)">
+      </div>
+
+      <!-- TAHMİNİ SÜRE -->
+      <div class="form-group">
+        <label>Tahmini Süre (Dakika)</label>
+        <input type="number" class="form-control" placeholder="Örn: 360" [ngModel]="newTripForm().estimatedDuration" (ngModelChange)="updateNewTripForm('estimatedDuration', $event)">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="save-btn create-btn" (click)="submitNewTrip()">SEFERİ OLUŞTUR</button>
+    </div>
+  </div>
+
+  <!-- AKTİF SEFERLER LİSTESİ -->
+  <div class="trip-list-section fade-in" style="animation-delay: 0.1s;">
+    <h3 class="section-title">Aktif Seferleriniz</h3>
+    
+    <div class="company-list">
+      @for (trip of trips(); track trip.tripId) {
+        <div class="company-card trip-item">
+          
+          <div class="trip-info">
+            <h4>{{ trip.originTerminal }} ➔ {{ trip.destinationTerminal }}</h4>
+            <p class="trip-details">
+              <span class="detail-badge">🗓️ {{ trip.departureTime | date:'dd.MM.yyyy HH:mm' }}</span>
+              <span class="detail-badge">🚌 {{ trip.busPlate }}</span>
+            </p>
+          </div>
+          
+          <div class="trip-actions">
+            <span class="price-tag">{{ trip.price | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+            <button class="action-btn manifesto-btn" (click)="openManifestoModal(trip)">Yolcu Listesi</button>
+            <button class="action-btn update-time-btn" (click)="openUpdateModal(trip)">Saati Güncelle</button>
+          </div>
+
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <p>Şu an için aktif bir seferiniz bulunmuyor.</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- SAAT GÜNCELLEME MODALI (POPUP) -->
+  @if (selectedTripForUpdate()) {
+    <div class="modal-overlay fade-in">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Sefer Saatini Güncelle</h3>
+          <button class="close-modal-btn" (click)="closeUpdateModal()">×</button>
+        </div>
+        
+        <div class="modal-body">
+          <p class="modal-desc">
+            <strong>{{ selectedTripForUpdate()?.originTerminal }} ➔ {{ selectedTripForUpdate()?.destinationTerminal }}</strong> seferinin kalkış saatini güncelliyorsunuz.
+            <br>
+            <span class="warning-text">Dikkat: Bilet satılmış seferlerin saati değiştirilemez!</span>
+          </p>
+          
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label>Yeni Kalkış Saati</label>
+            <input type="text" appFlatpickr [enableTime]="true" placeholder="Yeni Kalkış Saati" class="form-control" [ngModel]="newTimeForUpdate()" (ngModelChange)="newTimeForUpdate.set($event)">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="cancel-btn" (click)="closeUpdateModal()">İptal</button>
+          <button class="save-btn" (click)="submitTimeUpdate()">Saati Kaydet</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
+
+<!-- YOLCU MANİFESTOSU MODALI -->
+  @if (selectedTripForManifesto()) {
+    <div class="modal-overlay fade-in">
+      <div class="modal-card manifesto-card">
+        <div class="modal-header">
+          <div>
+            <h3>Yolcu Manifestosu</h3>
+            <p class="modal-subtitle">{{ selectedTripForManifesto()?.originTerminal }} ➔ {{ selectedTripForManifesto()?.destinationTerminal }} ({{ selectedTripForManifesto()?.busPlate }})</p>
+          </div>
+          <button class="close-modal-btn" (click)="closeManifestoModal()">×</button>
+        </div>
+        
+        <div class="modal-body manifesto-body">
+          <table class="manifesto-table">
+            <thead>
+              <tr>
+                <th>Koltuk</th>
+                <th>Yolcu Adı</th>
+                <th>TC Kimlik</th>
+                <th>Durum</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of tripPassengers(); track p.ticketId) {
+                <tr [class.cancelled-row]="p.status === 0">
+                  <td class="seat-col"><strong>{{ p.seatNumber }}</strong></td>
+                  <td>{{ p.passengerName }}</td>
+                  <td>{{ p.identityNumber }}</td>
+                  <td>
+                    @if (p.status === 1) {
+                      <span class="status-badge active">Aktif</span>
+                    } @else {
+                      <span class="status-badge cancelled">İptal Edildi</span>
+                    }
+                  </td>
+                  <td>
+                    @if (p.status === 1) {
+                      <button class="cancel-ticket-btn" title="Bileti İptal Et" (click)="cancelPassengerTicket(p)">İptal Et</button>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="empty-table">Bu sefere henüz bilet satılmamış.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }

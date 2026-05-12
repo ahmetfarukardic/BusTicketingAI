@@ -1,0 +1,101 @@
+<div class="profile-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+  
+  <h2 style="color: #1e293b; margin-bottom: 20px;">
+    <i class="pi pi-user" style="font-size: 1.5rem; margin-right: 10px;"></i>
+    Profilim ve Biletlerim
+  </h2>
+
+  <!-- YENİ PRİMENG 20 TABS MİMARİSİ -->
+  <p-tabs value="0">
+    
+    <!-- SEKME BAŞLIKLARI -->
+    <p-tablist>
+      <p-tab value="0">
+        <i class="pi pi-ticket" style="margin-right: 8px;"></i>
+        Aktif Biletlerim
+      </p-tab>
+      <p-tab value="1">
+        <i class="pi pi-history" style="margin-right: 8px;"></i>
+        Geçmiş Biletlerim
+      </p-tab>
+    </p-tablist>
+
+    <!-- SEKME İÇERİKLERİ -->
+    <p-tabpanels>
+      
+      <!-- İÇERİK 0: AKTİF BİLETLER -->
+      <p-tabpanel value="0">
+        @if (activeTickets().length === 0) {
+          <div style="text-align: center; padding: 50px; background: #f8fafc; border-radius: 8px;">
+            <i class="pi pi-info-circle" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
+            <p style="color: #64748b; font-size: 1.1rem;">Şu an için aktif bir biletiniz bulunmuyor.</p>
+          </div>
+        } @else {
+          <div style="display: flex; flex-direction: column; gap: 15px;">
+            @for (ticket of activeTickets(); track ticket.ticketId) {
+              <!-- BİLET KARTI TASARIMI -->
+              <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
+                
+                <!-- Bilet Sol Taraf -->
+                <div style="flex: 1;">
+                  <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <span style="font-size: 1.2rem; font-weight: bold; color: #0f172a;">{{ ticket.departureTerminal }}</span>
+                    <i class="pi pi-arrow-right" style="color: #3b82f6;"></i>
+                    <span style="font-size: 1.2rem; font-weight: bold; color: #0f172a;">{{ ticket.arrivalTerminal }}</span>
+                  </div>
+                  <div style="display: flex; gap: 30px; color: #475569; font-size: 0.95rem;">
+                    <div><i class="pi pi-calendar" style="margin-right: 5px;"></i> {{ ticket.departureTime | date:'dd.MM.yyyy HH:mm' }}</div>
+                    <div><i class="pi pi-user" style="margin-right: 5px;"></i> Yolcu: {{ ticket.passengerName }}</div>
+                    <div><i class="pi pi-id-card" style="margin-right: 5px;"></i> Koltuk: <strong style="color: #3b82f6; font-size: 1.1rem;">{{ ticket.seatNumber }}</strong></div>
+                  </div>
+                </div>
+
+                <!-- Bilet Sağ Taraf -->
+                <div style="border-left: 2px dashed #cbd5e1; padding-left: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; min-width: 150px;">
+                  <div style="font-size: 1.4rem; font-weight: bold; color: #10b981;">
+                    {{ ticket.price | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}
+                  </div>
+                  <p-button label="İptal Et" icon="pi pi-times" severity="danger" [outlined]="true" size="small" (onClick)="cancelTicket(ticket)"></p-button>
+                </div>
+
+              </div>
+            }
+          </div>
+        }
+      </p-tabpanel>
+
+      <!-- İÇERİK 1: GEÇMİŞ BİLETLER -->
+      <p-tabpanel value="1">
+        <p-table [value]="pastTickets()" [paginator]="true" [rows]="5" styleClass="p-datatable-striped">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Güzergah</th>
+              <th>Tarih</th>
+              <th>Koltuk</th>
+              <th>Fiyat</th>
+              <th>Durum</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-ticket>
+            <tr>
+              <td style="font-weight: 500;">{{ ticket.departureTerminal }} - {{ ticket.arrivalTerminal }}</td>
+              <td>{{ ticket.departureTime | date:'dd.MM.yyyy HH:mm' }}</td>
+              <td>{{ ticket.seatNumber }}</td>
+              <td>{{ ticket.price | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}</td>
+              <td>
+                <p-tag [value]="getStatusText(ticket.status)" [severity]="getSeverity(ticket.status)"></p-tag>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">Geçmiş veya iptal edilmiş biletiniz bulunmuyor.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabpanel>
+
+    </p-tabpanels>
+  </p-tabs>
+
+</div>

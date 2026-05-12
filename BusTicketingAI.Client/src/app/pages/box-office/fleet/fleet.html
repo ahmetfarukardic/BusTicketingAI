@@ -1,0 +1,63 @@
+<div class="admin-container fleet-container">
+
+  <div class="admin-header" style="margin-bottom: 1.5rem;">
+    <h2>Filo Yönetimi (Garaj)</h2>
+    <p class="header-subtitle">Filonuza yeni otobüsler ekleyin ve mevcut araçlarınızı yönetin.</p>
+  </div>
+
+  <!-- YENİ OTOBÜS EKLEME KARTI -->
+  <div class="company-card form-card fade-in">
+    <div class="card-header">
+      <span class="header-icon">🚌</span>
+      <h3>Yeni Otobüs Ekle</h3>
+    </div>
+    
+    <div class="form-grid">
+      <!-- PLAKA -->
+      <div class="form-group">
+        <label>Araç Plakası</label>
+        <input type="text" class="form-control uppercase-input" placeholder="Örn: 34 ABC 123" 
+               [ngModel]="newBusForm().plateNumber" 
+               (ngModelChange)="updateNewBusForm('plateNumber', $event)">
+      </div>
+
+      <!-- KAPASİTE -->
+      <div class="form-group">
+        <label>Koltuk Kapasitesi</label>
+        <input type="number" class="form-control" placeholder="Örn: 40" 
+               [ngModel]="newBusForm().seatCapacity" 
+               (ngModelChange)="updateNewBusForm('seatCapacity', $event)">
+      </div>
+
+      <!-- EKLE BUTONU -->
+      <div class="form-group add-btn-group">
+        <button class="save-btn create-btn" (click)="submitNewBus()">FİLOYA EKLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEVCUT FİLO LİSTESİ (GRID) -->
+  <div class="fleet-list-section fade-in" style="animation-delay: 0.1s;">
+    <h3 class="section-title">Mevcut Otobüsleriniz</h3>
+    
+    <div class="bus-grid">
+      @for (bus of buses(); track bus.id) {
+        <div class="bus-card">
+          <div class="bus-icon">🚌</div>
+          <div class="bus-details">
+            <div class="plate-number">{{ bus.plateNumber }}</div>
+            <div class="capacity-badge">{{ bus.seatCapacity }} Kişilik</div>
+          </div>
+          <button class="delete-btn" title="Otobüsü Sil" (click)="deleteBus(bus.id, bus.plateNumber)">
+            <i class="icon-trash">🗑️</i>
+          </button>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <p>Garajınızda henüz bir otobüs bulunmuyor.</p>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,78 @@
+<div style="max-width: 900px; margin: 40px auto; display: flex; gap: 30px;">
+  
+  <div style="flex: 2; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    
+    @if (currentStep() === 1) {
+      <h2 style="margin-top: 0;">Yolcu Bilgileri</h2>
+      <form [formGroup]="checkoutForm">
+        
+        <h4 style="color: #475569;">İletişim Bilgileri</h4>
+        <div style="display: flex; gap: 15px; margin-bottom: 30px;">
+          <input pInputText formControlName="contactEmail" placeholder="E-Posta" style="flex: 1" />
+          <input pInputText formControlName="contactPhone" placeholder="Telefon (05XX...)" style="flex: 1" />
+        </div>
+
+        <h4 style="color: #475569;">Koltuk Sahipleri</h4>
+        <div formArrayName="passengers" style="display: flex; flex-direction: column; gap: 20px;">
+          @for (passengerForm of passengersFormArray.controls; track $index) {
+            <div [formGroupName]="$index" style="padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px;">
+              <div style="font-weight: bold; color: #3b82f6; margin-bottom: 10px;">
+                {{ passengerForm.get('seatNumber')?.value }}. Koltuk Yolcusu
+              </div>
+              <div style="display: flex; gap: 15px;">
+                <input pInputText 
+                  [value]="passengerForm.get('gender')?.value === 'E' ? 'Erkek' : 'Kadın'" 
+                  readonly 
+                  style="flex: 0.5; background-color: #f8fafc; color: #94a3b8; cursor: not-allowed;" />
+                <input pInputText formControlName="fullName" placeholder="Ad Soyad" style="flex: 1" />
+                <input pInputText formControlName="tcIdentity" placeholder="T.C. Kimlik No" maxlength="11" style="flex: 1" />
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- SÖZLEŞME ONAY KISMI -->
+        <div style="margin-top: 30px; display: flex; align-items: center; gap: 10px;">
+          <p-checkbox [binary]="true" [ngModel]="termsConfirmed()" [ngModelOptions]="{standalone: true}" [readonly]="true" inputId="terms"></p-checkbox>
+          <label style="cursor: pointer;">
+            <a (click)="openTermsModal()" style="color: #0284c7; font-weight: bold; text-decoration: underline;">Mesafeli Satış Sözleşmesi</a>'ni okudum ve onaylıyorum.
+          </label>
+        </div>
+
+        <div style="margin-top: 30px; text-align: right;">
+          <p-button label="Ödeme Adımına Geç" (onClick)="goToPayment()"></p-button>
+        </div>
+      </form>
+    }
+
+    <!-- ADIM 2: CHILD COMPONENT ÇAĞRILIYOR -->
+    @if (currentStep() === 2) {
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+        <p-button icon="pi pi-arrow-left" [text]="true" (onClick)="currentStep.set(1)"></p-button>
+        <h2 style="margin: 0;">Güvenli Ödeme</h2>
+      </div>
+      
+      <!-- Checkout verisini Payment bileşenine yolluyoruz -->
+      <app-payment [orderData]="checkoutForm.getRawValue()" [totalPrice]="totalPrice()" [tripId]="tripId()" (paymentSuccess)="isPaymentSuccessful = true"></app-payment>
+    }
+  </div>
+
+  <div style="flex: 1; min-width: 250px;">
+    <div style="position: sticky; top: 20px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 4px solid #10b981;">
+      <h3 style="margin-top: 0; white-space: nowrap;">Sipariş Özeti</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
+        <span style="white-space: nowrap; color: #475569;">Toplam Tutar</span>
+        <span style="font-weight: bold; color: #10b981; white-space: nowrap;">{{ totalPrice() }} ₺</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SÖZLEŞME MODALI -->
+<p-dialog header="Mesafeli Satış Sözleşmesi" [visible]="isTermsModalOpen()" (visibleChange)="isTermsModalOpen.set($event)" [modal]="true" [style]="{width: '50vw'}">
+  <p>Bu alanda yasal sözleşme metni yer almaktadır. Lütfen okuyup onaylayınız.</p>
+  <ng-template pTemplate="footer">
+    <!-- TAM İSTEDİĞİN GİBİ: I Agree butonu burada ve checkbox'ı kilitliyor -->
+    <p-button label="Onayla" icon="pi pi-check" (onClick)="acceptTerms()"></p-button>
+  </ng-template>
+</p-dialog>

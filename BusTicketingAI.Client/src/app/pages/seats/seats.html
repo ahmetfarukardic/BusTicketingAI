@@ -1,0 +1,96 @@
+<div class="seats-container">
+  <div class="header">
+    <h2>Koltuk Seçimi 💺</h2>
+    <p>Sefer No: <strong>{{ tripId }}</strong> | Lütfen seyahat etmek istediğiniz koltukları seçin.</p>
+  </div>
+
+  <div class="layout-wrapper">
+    
+    <div class="bus-layout">
+      <div class="driver-area">Direksiyon 🎡</div>
+      
+      <div class="seats-grid">
+        <div *ngFor="let seat of seats" 
+             class="seat" 
+             [ngClass]="{
+              'available': seat.status === 'available',
+              'occupied': seat.status === 'occupied',
+              'selected': seat.status === 'selected',
+              'gender-E': seat.gender === 'E',
+              'gender-K': seat.gender === 'K'
+             }" 
+             (click)="toggleSeat(seat)">
+          {{ seat.number }}
+        </div>
+      </div>
+    </div>
+
+    <div class="ticket-summary">
+      <h3>Seçilen Koltuklar</h3>
+      
+      <div class="selected-list">
+        <div class="selected-seats-row" *ngIf="selectedSeats().length > 0">
+          <div *ngFor="let s of selectedSeats()" class="mini-seat" [ngClass]="s.gender === 'E' ? 'gender-E' : 'gender-K'">
+            {{ s.seatNumber }}
+          </div>
+        </div>
+        <p *ngIf="selectedSeats().length === 0" class="empty-text">Henüz koltuk seçmediniz.</p>
+      </div>
+
+      <div class="summary-footer" *ngIf="selectedSeats().length > 0">
+        <div class="price-row">
+          <span>Toplam Tutar:</span>
+          <span class="total-price">{{ totalPrice }} ₺</span>
+        </div>
+        <button class="checkout-btn" 
+                (click)="proceedToCheckout()"
+                [disabled]="isLocking()"
+                [style.opacity]="isLocking() ? '0.7' : '1'"
+                [style.cursor]="isLocking() ? 'wait' : 'pointer'">
+                {{ isLocking() ? 'Koltuklar Ayırtılıyor...' : 'ONAYLA VE DEVAM ET' }}
+        </button>
+      </div>
+
+      <div class="legend" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 2rem;">
+        <div class="legend-item"><div class="box" style="border: 2px solid #cbd5e1; background: white;"></div> Boş Koltuk</div>
+    <div class="legend-item"><div class="box" style="background: #10b981;"></div> Seçilen Koltuk</div>
+    <div class="legend-item"><div class="box" style="background: #bfdbfe; border: 2px solid #3b82f6;"></div> Dolu Koltuk - Erkek</div>
+    <div class="legend-item"><div class="box" style="background: #fbcfe8; border: 2px solid #ec4899;"></div> Dolu Koltuk - Kadın</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="selected-list">
+  <span class="badge" *ngFor="let s of selectedSeats()">
+    Koltuk {{ s.seatNumber }} ({{ s.gender === 'E' ? 'Erkek' : 'Kadın' }})
+  </span>
+  <p *ngIf="selectedSeats().length === 0" class="empty-text">Henüz koltuk seçmediniz.</p>
+</div>
+
+
+<p-dialog header="Yolcu Cinsiyeti" [visible]="isGenderModalOpen()" (visibleChange)="isGenderModalOpen.set($event)" [modal]="true" [style]="{width: '350px'}">
+  <p style="text-align: center; color: #475569; margin-bottom: 20px;">
+    <strong>{{ pendingSeatSelection?.number }}</strong> numaralı koltuk için yolcu cinsiyetini seçiniz.
+  </p>
+  
+  <div style="display: flex; gap: 15px; justify-content: center;">
+    <div (click)="restrictedGender() !== 'K' ? confirmSeatGender('K') : null" 
+        class="gender-selection-btn female-btn"
+        [class.disabled-gender]="restrictedGender() === 'K'">
+      <i class="pi pi-user" style="font-size: 2rem; color: #ec4899;"></i>
+      <div style="font-weight: bold; color: #db2777; margin-top: 10px;">Kadın</div>
+      <small *ngIf="restrictedGender() === 'K'" style="color: #ef4444; font-size: 0.75rem; display: block; margin-top: 5px; font-weight: bold;">Yan Koltuk Erkek</small>
+    </div>
+
+    <div (click)="restrictedGender() !== 'E' ? confirmSeatGender('E') : null" 
+         class="gender-selection-btn male-btn"
+         [class.disabled-gender]="restrictedGender() === 'E'">
+      <i class="pi pi-user" style="font-size: 2rem; color: #3b82f6;"></i>
+      <div style="font-weight: bold; color: #2563eb; margin-top: 10px;">Erkek</div>
+      <small *ngIf="restrictedGender() === 'E'" style="color: #ef4444; font-size: 0.75rem; display: block; margin-top: 5px; font-weight: bold;">Yan Koltuk Kadın</small>
+    </div>
+
+  </div>
+</p-dialog>

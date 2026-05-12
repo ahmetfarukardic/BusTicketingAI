@@ -1,0 +1,25 @@
+<div class="admin-wrapper">
+  
+  <nav class="admin-navbar">
+    <div class="brand">
+      <span>BusTicketingAI</span> 
+      <span class="badge">Admin Panel</span>
+    </div>
+    
+    <div class="nav-links">
+      <a routerLink="/admin/companies" routerLinkActive="active" class="nav-tab">Firma Yönetimi</a>
+      <a routerLink="/admin/users" routerLinkActive="active" class="nav-tab">Kullanıcı Yönetimi</a>
+    </div>
+
+    <div class="user-actions">
+      <span class="welcome-text">Hoş geldin, Sistem</span>
+      <button class="logout-btn" routerLink="/trips">Çıkış Yap</button>
+    </div>
+    
+  </nav>
+
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

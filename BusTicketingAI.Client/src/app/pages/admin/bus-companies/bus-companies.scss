@@ -1,0 +1,272 @@
+.admin-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* --- ÜST HEADER VE EKLEME KISMI --- */
+.admin-header {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+
+  h2 {
+    margin-top: 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .action-bar {
+    display: flex;
+    gap: 1rem;
+
+    input {
+      flex: 1;
+      padding: 0.8rem 1.2rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1rem;
+      transition: all 0.2s;
+
+      &:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      }
+    }
+
+    .add-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 0 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      white-space: nowrap;
+
+      &:hover {
+        background: #059669;
+      }
+      
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+}
+
+/* --- KART LİSTESİ --- */
+.company-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.company-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #3b82f6; /* Şık bir mavi çizgi detayı */
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  .company-info {
+    h3 {
+      margin: 0 0 0.5rem 0;
+      color: #111827;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .company-id {
+      margin: 0;
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+  }
+
+  .company-action {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .bus-badge {
+      background: #eff6ff;
+      color: #2563eb;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: #dc2626;
+      }
+    }
+
+    /* Yeni Buton ve Input Tasarımları */
+    .edit-btn {
+      background: #f59e0b; /* Şık bir turuncu */
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover { background: #d97706; }
+    }
+
+    .save-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover { background: #059669; }
+    }
+
+    .cancel-btn {
+      background: #6b7280; /* Gri */
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover { background: #4b5563; }
+    }
+    
+    .edit-input {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+      background-color: #f3f4f6; /* Hafif modern bir gri arka plan */
+      border: 2px solid transparent; /* Çerçeveyi başlangıçta gizliyoruz */
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      outline: none;
+      width: 100%;
+      max-width: 350px;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s ease-in-out;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); /* İçeriye doğru hafif bir derinlik */
+
+      /* Kullanıcı içine tıkladığında (Focus durumu) çalışacak şık efekt */
+      &:focus {
+        background-color: #ffffff;
+        border-color: #3b82f6; /* Kenarlık canlanıp mavi oluyor */
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Etrafında yumuşak bir parlama (ring efekti) */
+      }
+    }
+
+/* --- BOŞ DURUM EKRANI --- */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: #ffffff;
+  border-radius: 12px;
+  color: #6b7280;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+  background-color: #f9fafb;
+  transition: all 0.2s;
+
+  &:focus {
+    background-color: #ffffff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+}
+
+.btn-close {
+  background-color: #ef4444 !important;
+  &:hover { background-color: #dc2626 !important; }
+}
+
+.add-form-panel {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: #f8fafc; /* Hafif mavi/gri arkaplan */
+  border: 2px dashed #cbd5e1; /* Şık kesik çizgili kenarlık */
+  border-radius: 8px;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  animation: slideDown 0.3s ease-out; /* Kayarak açılma animasyonu */
+
+  input {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    outline: none;
+    transition: all 0.2s;
+
+    &:focus {
+      border-color: #10b981; /* Başarılı ekleme hissiyatı için yeşil parlama */
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,62 @@
+<div class="admin-container">
+
+  <div class="admin-header">
+    <h2>Firma Yönetimi</h2>
+    
+    <div class="action-bar">
+      <input type="text" class="search-input" placeholder="Firma adıyla ara..." [(ngModel)]="searchText">
+      
+      <button class="add-btn" (click)="toggleAddForm()" [class.btn-close]="showAddForm">
+        {{ showAddForm ? 'Kapat' : '+ Yeni Firma Ekle' }}
+      </button>
+    </div>
+
+    @if (showAddForm) {
+      <div class="add-form-panel">
+        <input type="text" placeholder="Yeni Firma Adı (Örn: Metro Turizm)" 
+               [(ngModel)]="newCompanyName" (keyup.enter)="addCompany()">
+        <div class="form-actions">
+          <button class="save-btn" (click)="addCompany()">Kaydet</button>
+          <button class="cancel-btn" (click)="toggleAddForm()">İptal</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="company-list">
+    
+    @for (company of filteredCompanies; track company.id) {
+      <div class="company-card">
+        <div class="company-info">
+          @if (editingCompanyId === company.id) {
+            <input type="text" class="edit-input form-control" [(ngModel)]="editCompanyName" (keyup.enter)="saveEdit(company.id)">
+          } @else {
+            <h3>{{ company.name }}</h3>
+          }
+          <p class="company-id">Kayıt ID: #{{ company.id }}</p>
+        </div>
+
+        <div class="company-action">
+          <span class="bus-badge">{{ company.totalBuses }} Otobüs</span>
+          @if (editingCompanyId === company.id) {
+            <button class="save-btn" (click)="saveEdit(company.id)">Kaydet</button>
+            <button class="cancel-btn" (click)="cancelEdit()">İptal</button>
+          } @else {
+            <button class="edit-btn" (click)="startEdit(company)">Düzenle</button>
+            <button class="delete-btn" (click)="deleteCompany(company)">Sil</button>
+          }
+        </div>
+      </div>
+      
+    } @empty {
+      <div class="empty-state">
+        @if (searchText) {
+          <p>"{{ searchText }}" aramasına uygun firma bulunamadı.</p>
+        } @else {
+          <p>Sistemde henüz kayıtlı firma bulunmuyor. Yukarıdan ilk firmanızı ekleyebilirsiniz.</p>
+        }
+      </div>
+    }
+  </div>
+
+</div>

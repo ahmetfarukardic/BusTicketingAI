@@ -1,0 +1,141 @@
+<div class="admin-container">
+
+  <div class="admin-header">
+    <h2>Kullanıcı Yönetimi</h2>
+    <div class="action-bar">
+      <input type="text" class="search-input" placeholder="İsim veya Email ile ara..." [(ngModel)]="searchText">
+      <button class="add-btn" (click)="toggleAddForm()" [class.btn-close]="showAddForm">
+        {{ showAddForm ? 'Kapat' : '+ Yeni Kullanıcı' }}
+      </button>
+    </div>
+
+    @if (showAddForm) {
+      <div class="add-form-stacked">
+        <h3>Yeni Kullanıcı Ekle</h3>
+        <p class="panel-desc">Sisteme yeni bir kullanıcı eklemek için aşağıdaki bilgileri doldurun.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Ad</label>
+            <input type="text" placeholder="Kullanıcının adını girin..." [(ngModel)]="newUser.firstName" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>Soyad</label>
+            <input type="text" placeholder="Kullanıcının soyadını girin..." [(ngModel)]="newUser.lastName" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>E-posta</label>
+            <input type="email" placeholder="example@company.com" [(ngModel)]="newUser.email" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>Şifre</label>
+            <input type="password" placeholder="Min. 8 karakter..." [(ngModel)]="newUser.password" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label>Rol</label>
+            <select [(ngModel)]="newUser.role" class="form-control">
+              <option value="Member">Standart Üye (Member)</option>
+              <option value="CompanyStaff">Firma Yetkilisi (Staff)</option>
+              <option value="Admin">Sistem Yöneticisi (Admin)</option>
+            </select>
+          </div>
+
+          @if (newUser.role === 'CompanyStaff') {
+            <div class="form-group fade-in">
+              <label>Firma Seçimi</label>
+              <select [(ngModel)]="newUser.companyId" class="form-control">
+                <option [ngValue]="null" disabled selected>Hangi Firmanın Yetkilisi?</option>
+                @for (company of companies; track company.id) {
+                  <option [value]="company.id">{{ company.name }}</option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+
+        <div class="form-actions">
+          <button class="save-btn" (click)="addUser()">Kaydet</button>
+          <button class="cancel-btn" (click)="toggleAddForm()">İptal</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="company-list">
+    @for (user of filteredUsers; track user.id) {
+      <div class="company-card" [class.is-editing]="editingUserId === user.id">
+        
+        @if (editingUserId === user.id) {
+          <div class="edit-form-stacked fade-in">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Ad</label>
+                <input type="text" class="form-control" [(ngModel)]="editUser.firstName" placeholder="Ad">
+              </div>
+
+              <div class="form-group">
+                <label>Soyad</label>
+                <input type="text" class="form-control" [(ngModel)]="editUser.lastName" placeholder="Soyad">
+              </div>
+
+              <div class="form-group">
+                <label>E-posta</label>
+                <input type="email" class="form-control" [(ngModel)]="editUser.email" placeholder="Email">
+              </div>
+
+              <div class="form-group">
+                <label>Rol</label>
+                <select [(ngModel)]="editUser.role" class="form-control">
+                  <option value="Member">Standart Üye (Member)</option>
+                  <option value="CompanyStaff">Firma Yetkilisi (Staff)</option>
+                  <option value="Admin">Sistem Yöneticisi (Admin)</option>
+                </select>
+              </div>
+
+              @if (editUser.role === 'CompanyStaff') {
+                <div class="form-group fade-in">
+                  <label>Firma Seçimi</label>
+                  <select [(ngModel)]="editUser.companyId" class="form-control">
+                    <option [ngValue]="null" disabled selected>Hangi Firmanın Yetkilisi?</option>
+                    @for (company of companies; track company.id) {
+                      <option [value]="company.id">{{ company.name }}</option>
+                    }
+                  </select>
+                </div>
+              }
+            </div>
+
+            <div class="form-actions">
+              <button class="save-btn" (click)="saveEdit(user.id)">Güncelle</button>
+              <button class="cancel-btn" (click)="cancelEdit()">İptal</button>
+            </div>
+          </div>
+        } @else {
+          <div class="company-info" style="flex: 2;">
+            <h3>{{ user.firstName }} {{ user.lastName }}</h3>
+            <p class="company-id">📧 {{ user.email }}</p>
+          </div>
+
+          <div class="company-action" style="flex: 2; justify-content: flex-end;">
+            <span class="bus-badge" [ngStyle]="{'background': user.role === 'Admin' ? '#fee2e2' : user.role === 'CompanyStaff' ? '#fef3c7' : '#eff6ff', 
+                                                'color': user.role === 'Admin' ? '#dc2626' : user.role === 'CompanyStaff' ? '#d97706' : '#2563eb'}">
+              {{ user.role }}
+            </span>
+            <button class="edit-btn" (click)="startEdit(user)">Düzenle</button>
+            <button class="delete-btn" (click)="deleteUser(user)">Sil</button>
+          </div>
+        }
+
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <p>Aramanıza uygun kullanıcı bulunamadı.</p>
+      </div>
+    }
+  </div>
+
+</div>

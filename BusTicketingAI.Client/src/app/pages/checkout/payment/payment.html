@@ -1,0 +1,23 @@
+<div style="padding: 20px; border: 1px dashed #cbd5e1; border-radius: 8px;">
+  <h3 style="margin-top: 0; color: #475569;">Kart Bilgileri</h3>
+      
+    <form [formGroup]="paymentForm" style="display: flex; flex-direction: column; gap: 15px;">
+      <input pInputText formControlName="cardHolderName" placeholder="Kart Üzerindeki İsim" />
+      <input pInputText formControlName="cardNumber" placeholder="Kart Numarası" maxlength="16" />
+        
+      <div style="display: flex; gap: 15px;">
+        <input pInputText formControlName="expirationDate" placeholder="AA/YY" style="flex: 1;" maxlength="5" (input)="formatExpirationDate($event)"/>
+        <input pInputText formControlName="cvv" placeholder="CVV" style="flex: 1;" maxlength="3" />
+      </div>
+    </form>
+
+    <div style="margin-top: 30px;">
+      <p-button 
+        label="{{ totalPrice }} ₺ Ödemeyi Tamamla" 
+        severity="success" 
+        styleClass="w-full" 
+        [loading]="isLoading"
+        (onClick)="submitOrder()">
+      </p-button>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Aramıza Katıl</h2>
+        <p class="subtitle">Yeni bir hesap oluşturun</p>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ad</label>
+                    <input type="text" formControlName="firstName" placeholder="Adınız">
+                </div>
+                <div class="form-group">
+                    <label>Soyad</label>
+                    <input type="text" formControlName="lastName" placeholder="Soyadınız">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" formControlName="email" placeholder="ornek@mail.com">
+            </div>
+            <div class="form-group">
+                <label>Şifre</label>
+                <input type="password" formControlName="password" placeholder="••••••••">
+            </div>
+
+            <div class="form-group">
+                <label>Şifre Tekrar</label>
+                <input type="password" formControlName="confirmPassword" placeholder="••••••••">
+                
+                <small *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('passwordMismatch')" 
+                       class="error-text" style="color: #ef4444; font-size: 0.8rem; margin-top: 5px; display: block;">
+                    Şifreler birbiriyle eşleşmiyor!
+                </small>
+            </div>
+
+            <div *ngIf="errorMessage" class="error-alert">{{ errorMessage }}</div>
+            <div *ngIf="successMessage" class="success-alert">{{ successMessage }}</div>
+
+            <button type="submit" [disabled]="registerForm.invalid">Kayıt Ol</button>
+        </form>
+
+        <div class="footer-link">
+            Zaten bir hesabın var mı? <a routerLink="/login">Giriş Yap</a>
+        </div>
+    </div>
+</div>
