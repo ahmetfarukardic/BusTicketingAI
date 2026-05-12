@@ -1,0 +1,102 @@
+[
+  {
+    "Id": 1,
+    "CityId": 1,
+    "Name": "Adana Merkez Otogarı"
+  },
+  {
+    "Id": 2,
+    "CityId": 6,
+    "Name": "AŞTİ (Ankara Şehirlerarası Terminal İşletmesi)"
+  },
+  {
+    "Id": 3,
+    "CityId": 7,
+    "Name": "Antalya Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 4,
+    "CityId": 16,
+    "Name": "Bursa Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 5,
+    "CityId": 21,
+    "Name": "Diyarbakır Şehirlerarası Otobüs Terminali (DİŞTİ)"
+  },
+  {
+    "Id": 6,
+    "CityId": 25,
+    "Name": "Erzurum Büyükşehir Belediyesi Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 7,
+    "CityId": 26,
+    "Name": "Eskişehir Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 8,
+    "CityId": 27,
+    "Name": "Gaziantep Şehirlerarası Otobüs Terminali (GAŞTİ)"
+  },
+  {
+    "Id": 9,
+    "CityId": 33,
+    "Name": "Mersin Şehirlerarası Otobüs Terminali (MEŞTİ)"
+  },
+  {
+    "Id": 10,
+    "CityId": 34,
+    "Name": "Esenler (15 Temmuz Demokrasi) Otogarı"
+  },
+  {
+    "Id": 11,
+    "CityId": 34,
+    "Name": "Alibeyköy Cep Otogarı"
+  },
+  {
+    "Id": 12,
+    "CityId": 34,
+    "Name": "Harem Otogarı"
+  },
+  {
+    "Id": 13,
+    "CityId": 35,
+    "Name": "İzmir Şehirlerarası Otobüs Terminali (İZOTAŞ)"
+  },
+  {
+    "Id": 14,
+    "CityId": 38,
+    "Name": "Kayseri Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 15,
+    "CityId": 41,
+    "Name": "İzmit Şehirlerarası Otobüs Terminali (AŞTİ)"
+  },
+  {
+    "Id": 16,
+    "CityId": 42,
+    "Name": "Konya Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 17,
+    "CityId": 48,
+    "Name": "Menteşe (Muğla) Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 18,
+    "CityId": 54,
+    "Name": "Sakarya Büyükşehir Belediyesi Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 19,
+    "CityId": 55,
+    "Name": "Samsun Yusuf Ziya Yılmaz Şehirlerarası Otobüs Terminali"
+  },
+  {
+    "Id": 20,
+    "CityId": 61,
+    "Name": "Trabzon Şehirlerarası Otobüs Terminali"
+  }
+]

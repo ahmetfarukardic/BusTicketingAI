@@ -1,0 +1,122 @@
+﻿[
+  {
+    "Id": 1,
+    "CompanyId": 1,
+    "PlateNumber": "16 KK 001",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 2,
+    "CompanyId": 1,
+    "PlateNumber": "16 KK 002",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 3,
+    "CompanyId": 2,
+    "PlateNumber": "35 PM 001",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 4,
+    "CompanyId": 2,
+    "PlateNumber": "35 PM 002",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 5,
+    "CompanyId": 3,
+    "PlateNumber": "34 MT 001",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 6,
+    "CompanyId": 3,
+    "PlateNumber": "34 MT 002",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 7,
+    "CompanyId": 4,
+    "PlateNumber": "61 AU 001",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 8,
+    "CompanyId": 4,
+    "PlateNumber": "61 AU 002",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 9,
+    "CompanyId": 5,
+    "PlateNumber": "06 VR 001",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 10,
+    "CompanyId": 5,
+    "PlateNumber": "06 VR 002",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 11,
+    "CompanyId": 6,
+    "PlateNumber": "16 NL 001",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 12,
+    "CompanyId": 6,
+    "PlateNumber": "16 NL 002",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 13,
+    "CompanyId": 7,
+    "PlateNumber": "41 EF 001",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 14,
+    "CompanyId": 7,
+    "PlateNumber": "41 EF 002",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 15,
+    "CompanyId": 8,
+    "PlateNumber": "59 IS 001",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 16,
+    "CompanyId": 8,
+    "PlateNumber": "59 IS 002",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 17,
+    "CompanyId": 9,
+    "PlateNumber": "53 LK 001",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 18,
+    "CompanyId": 9,
+    "PlateNumber": "53 LK 002",
+    "SeatCapacity": 30
+  },
+  {
+    "Id": 19,
+    "CompanyId": 10,
+    "PlateNumber": "21 OZ 001",
+    "SeatCapacity": 40
+  },
+  {
+    "Id": 20,
+    "CompanyId": 10,
+    "PlateNumber": "21 OZ 002",
+    "SeatCapacity": 40
+  }
+]

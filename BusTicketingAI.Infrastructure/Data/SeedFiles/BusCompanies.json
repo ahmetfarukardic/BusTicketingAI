@@ -1,0 +1,42 @@
+[
+  {
+    "Id": 1,
+    "Name": "Kamil Koç"
+  },
+  {
+    "Id": 2,
+    "Name": "Pamukkale Turizm"
+  },
+  {
+    "Id": 3,
+    "Name": "Metro Turizm"
+  },
+  {
+    "Id": 4,
+    "Name": "Ali Osman Ulusoy"
+  },
+  {
+    "Id": 5,
+    "Name": "Varan Turizm"
+  },
+  {
+    "Id": 6,
+    "Name": "Nilüfer Turizm"
+  },
+  {
+    "Id": 7,
+    "Name": "Efe Tur"
+  },
+  {
+    "Id": 8,
+    "Name": "İstanbul Seyahat"
+  },
+  {
+    "Id": 9,
+    "Name": "Lüks Karadeniz"
+  },
+  {
+    "Id": 10,
+    "Name": "Öz Diyarbakır Seyahat"
+  }
+]
