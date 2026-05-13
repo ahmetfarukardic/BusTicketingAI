@@ -9,12 +9,10 @@ public record CancelTicketCommand(Guid TicketId, int CompanyId) : IRequest<bool>
 public class CancelTicketCommandHandler : IRequestHandler<CancelTicketCommand, bool>
 {
     private readonly ITicketRepository _ticketRepository;
-    private readonly IMediator _mediator;
 
-    public CancelTicketCommandHandler(ITicketRepository ticketRepository, IMediator mediator)
+    public CancelTicketCommandHandler(ITicketRepository ticketRepository)
     {
         _ticketRepository = ticketRepository;
-        _mediator = mediator;
     }
 
     public async Task<bool> Handle(CancelTicketCommand request, CancellationToken cancellationToken)
@@ -29,23 +27,23 @@ public class CancelTicketCommandHandler : IRequestHandler<CancelTicketCommand, b
 
         ticket.Status = 0;
 
-        _ticketRepository.Update(ticket);
-        await _ticketRepository.SaveChangesAsync(cancellationToken);
-        
         if (ticket.User != null)
         {
-            await _mediator.Publish(new TicketCancelledEvent(
-            ticket.Id,
-            ticket.User.Email,
-            ticket.PassengerName,
-            "PNR" + ticket.Id.ToString()[..6].ToUpper(),
-            ticket.Trip.OriginTerminal.Name,
-            ticket.Trip.DestinationTerminal.Name,
-            ticket.Trip.DepartureTime,
-            ticket.SeatNumber,
-            ticket.Trip.Bus.Company.Name
-        ), cancellationToken);
+            ticket.AddDomainEvent(new TicketCancelledEvent(
+                ticket.Id,
+                ticket.User.Email,
+                ticket.PassengerName,
+                "PNR" + ticket.Id.ToString()[..6].ToUpper(),
+                ticket.Trip.OriginTerminal.Name,
+                ticket.Trip.DestinationTerminal.Name,
+                ticket.Trip.DepartureTime,
+                ticket.SeatNumber,
+                ticket.Trip.Bus.Company.Name
+            ));
         }
+
+        _ticketRepository.Update(ticket);
+        await _ticketRepository.SaveChangesAsync(cancellationToken);
 
         return true;
     }

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using BusTicketingAI.Domain.Entity;
+using MediatR;
 
 namespace BusTicketingAI.Application.Events;
 
@@ -13,4 +14,4 @@ public record TicketPurchasedEvent(
     int SeatNumber,
     decimal Price,
     string CompanyName
-) : INotification;
+) : INotification, IDomainEvent;

@@ -2,7 +2,7 @@
 
 namespace BusTicketingAI.Domain.Entity;
 
-public class Ticket
+public class Ticket : BaseEntity
 {
     public Guid Id { get; set; }
     public Guid TripId { get; set; }

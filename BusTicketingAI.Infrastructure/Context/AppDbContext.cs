@@ -1,14 +1,18 @@
 ﻿using BusTicketingAI.Domain.Entity;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BusTicketingAI.Infrastructure.Context;
 
 public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 {
-    public AppDbContext(DbContextOptions options) : base(options)
+    private readonly IMediator _mediator;
+    public AppDbContext(DbContextOptions options, IMediator mediator) : base(options)
     {
+        _mediator = mediator;
     }
 
     public DbSet<Ticket> Tickets { get; set; }
@@ -17,6 +21,27 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<BusCompany> BusCompanies { get; set; }
     public DbSet<Bus> Buses { get; set; }
     public DbSet<Trip> Trips { get; set; }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var entitiesWithEvents = ChangeTracker.Entries<BaseEntity>()
+            .Select(e => e.Entity)
+            .Where(e => e.DomainEvents.Any())
+            .ToList();
+
+        var domainEvents = entitiesWithEvents
+            .SelectMany(e => e.DomainEvents)
+            .ToList();
+
+        entitiesWithEvents.ForEach(e => e.ClearDomainEvent());
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        foreach (var domainEvent in domainEvents)
+        {
+            await _mediator.Publish((INotification)domainEvent, cancellationToken);
+        }
+        return result;
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

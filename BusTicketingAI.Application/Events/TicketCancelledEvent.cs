@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using BusTicketingAI.Domain.Entity;
+using MediatR;
 
 namespace BusTicketingAI.Application.Events;
 
@@ -12,4 +13,4 @@ public record TicketCancelledEvent(
     DateTime DepartureTime,
     int SeatNumber,
     string CompanyName
-) : INotification;
+) : INotification, IDomainEvent;

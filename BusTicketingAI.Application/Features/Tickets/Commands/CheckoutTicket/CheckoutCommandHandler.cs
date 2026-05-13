@@ -27,15 +27,13 @@ public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
     private readonly ITripRepository _tripRepository;
     private readonly IPaymentService _paymentService;
     private readonly IMemoryCache _memoryCache;
-    private readonly IMediator _mediator;
 
-    public CheckoutCommandHandler(ITicketRepository ticketRepository, IPaymentService paymentService, IMediator mediator, ITripRepository tripRepository, IMemoryCache memoryCache)
+    public CheckoutCommandHandler(ITicketRepository ticketRepository, IPaymentService paymentService, ITripRepository tripRepository, IMemoryCache memoryCache)
     {
         _ticketRepository = ticketRepository;
         _tripRepository = tripRepository;
         _paymentService = paymentService;
         _memoryCache = memoryCache;
-        _mediator = mediator;
     }
 
     public async Task<Guid> Handle(CheckoutCommand request, CancellationToken cancellationToken)
@@ -54,7 +52,6 @@ public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
             throw new Exception(paymentResult.ErrorMessage);
 
         var trip = await _tripRepository.GetTripWithBusAndTerminalAsync(request.TripId, cancellationToken) ?? throw new Exception("Sefer bulunamadı.");
-        var generatedTickets = new List<Ticket>();
 
         foreach (var passenger in request.Passengers)
         {
@@ -71,8 +68,21 @@ public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
                 Status = 1,
                 CreatedAt = DateTime.UtcNow
             };
+            string pnrCode = ticket.Id.ToString()[..8].ToUpper();
+
+            ticket.AddDomainEvent(new TicketPurchasedEvent(
+                TicketId: ticket.Id,
+                PassengerEmail: request.ContactEmail,
+                PassengerName: ticket.PassengerName,
+                PnrCode: pnrCode,
+                OriginTerminal: trip.OriginTerminal.Name,
+                DestinationTerminal: trip.DestinationTerminal.Name,
+                DepartureTime: trip.DepartureTime,
+                SeatNumber: ticket.SeatNumber,
+                Price: ticket.Price,
+                CompanyName: trip.Bus.Company.Name
+            ));
             await _ticketRepository.AddAsync(ticket, cancellationToken);
-            generatedTickets.Add(ticket);
         }
 
         await _ticketRepository.SaveChangesAsync(cancellationToken);
@@ -81,26 +91,6 @@ public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
         {
             lockedSeats.RemoveAll(ls => request.Passengers.Any(p => p.SeatNumber == ls.SeatNumber));
             _memoryCache.Set(cacheKey, lockedSeats, TimeSpan.FromMinutes(5));
-        }
-
-        foreach (var ticket in generatedTickets)
-        {
-            string pnrCode = ticket.Id.ToString()[..8].ToUpper();
-
-            var ticketEvent = new TicketPurchasedEvent(
-                TicketId: ticket.Id,
-                PassengerEmail: request.ContactEmail, 
-                PassengerName: ticket.PassengerName,
-                PnrCode: pnrCode,
-                OriginTerminal: trip.OriginTerminal.Name, 
-                DestinationTerminal: trip.DestinationTerminal.Name,
-                DepartureTime: trip.DepartureTime,
-                SeatNumber: ticket.SeatNumber,
-                Price: ticket.Price,
-                CompanyName: trip.Bus.Company.Name 
-            );
-
-            await _mediator.Publish(ticketEvent, cancellationToken);
         }
 
         return request.TripId;
