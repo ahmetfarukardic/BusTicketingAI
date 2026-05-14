@@ -53,7 +53,14 @@
       </div>
       
       <!-- Checkout verisini Payment bileşenine yolluyoruz -->
-      <app-payment [orderData]="checkoutForm.getRawValue()" [totalPrice]="totalPrice()" [tripId]="tripId()" (paymentSuccess)="isPaymentSuccessful = true"></app-payment>
+      <app-payment 
+        [orderData]="checkoutForm.getRawValue()"
+        [totalPrice]="remainingPriceToPay"
+        [originalPrice]="totalPrice()"
+        [tripId]="tripId()" 
+        [useWalletBalance]="useWalletBalance()"
+        (paymentSuccess)="isPaymentSuccessful = true">
+      </app-payment>
     }
   </div>
 
@@ -61,6 +68,18 @@
     <div style="position: sticky; top: 20px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 4px solid #10b981;">
       <h3 style="margin-top: 0; white-space: nowrap;">Sipariş Özeti</h3>
       <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
+        @if (walletBalance() > 0) {
+          <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span style="color: #166534; font-weight: bold;">Cüzdan Bakiyesi:</span>
+              <span style="color: #166534; font-weight: bold;">{{ walletBalance() | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <p-checkbox [binary]="true" [ngModel]="useWalletBalance()" (ngModelChange)="useWalletBalance.set($event)" inputId="useWallet"></p-checkbox>
+              <label for="useWallet" style="cursor: pointer; color: #15803d; font-size: 0.9rem;">Cüzdanımdan Düşülsün</label>
+            </div>
+          </div>
+        }
         <span style="white-space: nowrap; color: #475569;">Toplam Tutar</span>
         <span style="font-weight: bold; color: #10b981; white-space: nowrap;">{{ totalPrice() }} ₺</span>
       </div>

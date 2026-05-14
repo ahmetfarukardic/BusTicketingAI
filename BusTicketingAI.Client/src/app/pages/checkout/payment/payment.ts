@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,10 +14,12 @@ import { Router } from '@angular/router';
   templateUrl: './payment.html',
   styleUrl: './payment.scss',
 })
-export class Payment {
+export class Payment implements OnChanges {
   @Input() orderData: any;
   @Input() totalPrice!: number;
+  @Input() originalPrice!: number;
   @Input() tripId!: string;
+  @Input() useWalletBalance = false;
 
   @Output() paymentSuccess = new EventEmitter<void>();
 
@@ -35,6 +37,27 @@ export class Payment {
     cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]]
   });
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['totalPrice']) {
+      if (this.totalPrice === 0) {
+        this.paymentForm.clearValidators();
+        Object.keys(this.paymentForm.controls).forEach(key => {
+          this.paymentForm.get(key)?.clearValidators();
+          this.paymentForm.get(key)?.updateValueAndValidity();
+        });
+      } else {
+        this.paymentForm.get('cardHolderName')?.setValidators(Validators.required);
+        this.paymentForm.get('cardNumber')?.setValidators([Validators.required, Validators.minLength(16)]);
+        this.paymentForm.get('expirationDate')?.setValidators(Validators.required);
+        this.paymentForm.get('cvv')?.setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(3)]);
+
+        Object.keys(this.paymentForm.controls).forEach(key => {
+          this.paymentForm.get(key)?.updateValueAndValidity();
+        });
+      }
+    }
+  }
+
   formatExpirationDate(event: any) {
     let inputChar = String.fromCharCode(event.keyCode);
     let value = event.target.value;
@@ -50,7 +73,7 @@ export class Payment {
   }
 
   submitOrder() {
-    if (this.paymentForm.invalid) {
+    if (this.totalPrice > 0 && this.paymentForm.invalid) {
       this.paymentForm.markAllAsTouched();
       this.alertService.warning('Uyarı', 'Lütfen kart bilgilerini eksiksiz giriniz.');
       return;
@@ -63,12 +86,13 @@ export class Payment {
       tripId: this.tripId,
       contactEmail: this.orderData.contactEmail,
       contactPhone: this.orderData.contactPhone,
-      passengers: this.orderData.passengers, // { seatNumber, fullName, tcIdentity } olarak gelecek, backend ile birebir aynı!
-      cardHolderName: cardData.cardHolderName,
-      cardNumber: cardData.cardNumber,
-      expirationDate: cardData.expirationDate,
-      cvv: cardData.cvv,
-      totalAmount: this.totalPrice
+      passengers: this.orderData.passengers,
+      cardHolderName: cardData.cardHolderName || 'WALLET',
+      cardNumber: cardData.cardNumber || '000000000000',
+      expirationDate: cardData.expirationDate || '12/99',
+      cvv: cardData.cvv || '000',
+      totalAmount: this.originalPrice,
+      useWalletBalance: this.useWalletBalance
     };
 
     this.profileService.checkoutTicket(checkoutPayload).subscribe({

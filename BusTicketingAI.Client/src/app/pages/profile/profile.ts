@@ -22,8 +22,17 @@ export class Profile implements OnInit{
   activeTickets = signal<TicketDetailDto[]>([]);
   pastTickets = signal<TicketDetailDto[]>([]);
 
+  walletBalance = signal<number>(0);
+  walletTransactions = signal<any[]>([]);
+
   ngOnInit() {
     this.loadMyTickets();
+    this.loadWalletData();
+  }
+
+  loadWalletData() {
+    this.profileService.getWalletBalance().subscribe(res => this.walletBalance.set(res));
+    this.profileService.getWalletTransactions().subscribe(res => this.walletTransactions.set(res));
   }
 
   loadMyTickets() {
@@ -48,6 +57,7 @@ export class Profile implements OnInit{
           next: (res) => {
             this.alertService.success('Başarılı', 'Biletiniz başarıyla iptal edildi.');
             this.loadMyTickets();
+            this.loadWalletData();
           },
           error: (err) => {
             const errorMessage = err.error?.message || err.error?.detail || 'Bilet iptal edilirken bir hata oluştu.';

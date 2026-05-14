@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { BusCompanyService } from '../../../services/bus-company.service';
 import { AlertService } from '../../../services/alert.service';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DialogModule, ButtonModule],
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
@@ -25,6 +27,12 @@ export class Users implements OnInit{
   newUser = { firstName: '', lastName: '', email: '', password: '', role: 'Member', companyId: null };
   editingUserId: string | null = null;
   editUser = { firstName: '', lastName: '', email: '', role: 'Member', companyId: null as number | null };
+
+  isWalletModalOpen = false;
+  selectedUserForWallet: any = null;
+  currentUserBalance: number = 0;
+  walletAmountInput: number | null = null;
+  isAdjustingWallet = false;
 
   ngOnInit(): void {
     this.loadUsers();
@@ -109,5 +117,51 @@ export class Users implements OnInit{
         });
       }
     );
+  }
+
+  openWalletModal(user: any) {
+    this.selectedUserForWallet = user;
+    this.walletAmountInput = null;
+    this.currentUserBalance = 0;
+    this.isWalletModalOpen = true;
+
+    this.userService.getUserBalance(user.id).subscribe({
+      next: (balance) => this.currentUserBalance = balance,
+      error: () => this.alertService.error('Hata', 'Bakiye bilgisi çekilemedi.')
+    });
+  }
+
+  submitWalletAdjustment(isAdding: boolean) {
+    if (!this.walletAmountInput || this.walletAmountInput <= 0) {
+      this.alertService.warning('Uyarı', 'Lütfen geçerli bir tutar girin.');
+      return;
+    }
+
+    const finalAmount = isAdding ? this.walletAmountInput : -Math.abs(this.walletAmountInput);
+
+    if (!isAdding && this.walletAmountInput > this.currentUserBalance) {
+      this.alertService.warning('Uyarı', 'Kullanıcının bakiyesinden daha büyük bir kesinti yapamazsınız.');
+      return;
+    }
+
+    this.isAdjustingWallet = true;
+
+    const payload = {
+      userId: this.selectedUserForWallet.id,
+      amount: finalAmount
+    };
+
+    this.userService.adjustWalletBalance(payload).subscribe({
+      next: () => {
+        this.isAdjustingWallet = false;
+        this.isWalletModalOpen = false;
+        const actionText = isAdding ? 'yüklendi' : 'düşüldü';
+        this.alertService.success('Başarılı', `Kullanıcı cüzdanına işlem uygulandı. Tutar başarıyla ${actionText}.`);
+      },
+      error: () => {
+        this.isAdjustingWallet = false;
+        this.alertService.error('Hata', 'Cüzdan işlemi gerçekleştirilemedi.');
+      }
+    });
   }
 }

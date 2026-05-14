@@ -1,5 +1,7 @@
 ﻿using BusTicketingAI.Application.Events;
 using BusTicketingAI.Application.Interfaces;
+using BusTicketingAI.Domain.Entity;
+using BusTicketingAI.Domain.Enum;
 using MediatR;
 
 namespace BusTicketingAI.Application.Features.Tickets.Commands.CancelTicket;
@@ -9,10 +11,12 @@ public record CancelTicketCommand(Guid TicketId, int CompanyId) : IRequest<bool>
 public class CancelTicketCommandHandler : IRequestHandler<CancelTicketCommand, bool>
 {
     private readonly ITicketRepository _ticketRepository;
+    private readonly IWalletTransactionRepository _walletTransactionRepository;
 
-    public CancelTicketCommandHandler(ITicketRepository ticketRepository)
+    public CancelTicketCommandHandler(ITicketRepository ticketRepository, IWalletTransactionRepository walletTransactionRepository)
     {
         _ticketRepository = ticketRepository;
+        _walletTransactionRepository = walletTransactionRepository;
     }
 
     public async Task<bool> Handle(CancelTicketCommand request, CancellationToken cancellationToken)
@@ -26,6 +30,21 @@ public class CancelTicketCommandHandler : IRequestHandler<CancelTicketCommand, b
             throw new InvalidOperationException("Bu bilet zaten iptal edilmiş");
 
         ticket.Status = 0;
+
+        if (ticket.UserId.HasValue)
+        {
+            var refundTransaction = new WalletTransaction
+            {
+                Id = Guid.NewGuid(),
+                UserId = ticket.UserId.Value,
+                Amount = ticket.Price,
+                TransactionType = WalletTransactionType.Refund,
+                ReferenceId = ticket.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _walletTransactionRepository.AddAsync(refundTransaction, cancellationToken);
+        }
 
         if (ticket.User != null)
         {

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class UserService {
   private http = inject(HttpClient);
   private apiUrl = 'https://localhost:7202/api/users';
+  private walletApiUrl = 'https://localhost:7202/api/wallets';
 
   getUsers(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
@@ -24,4 +25,12 @@ export class UserService {
   deleteUser(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getUserBalance(userId: string): Observable<number> {
+    return this.http.get<number>(`${this.walletApiUrl}/${userId}/balance`);
+  }
+
+  adjustWalletBalance(payload: { userId: string, amount: number }): Observable<any> {
+    return this.http.post(`${this.walletApiUrl}/adjust-balance`, payload);
+  } 
 }

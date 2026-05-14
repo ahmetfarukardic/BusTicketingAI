@@ -21,6 +21,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<BusCompany> BusCompanies { get; set; }
     public DbSet<Bus> Buses { get; set; }
     public DbSet<Trip> Trips { get; set; }
+    public DbSet<WalletTransaction> WalletTransactions { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<IWalletTransactionRepository, WalletTransactionRepository>();
 
         return services;
     }

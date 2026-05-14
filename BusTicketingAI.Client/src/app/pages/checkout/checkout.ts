@@ -34,6 +34,9 @@ export class Checkout implements OnInit, OnDestroy {
   isTermsModalOpen = signal<boolean>(false);
   termsConfirmed = signal<boolean>(false);
 
+  walletBalance = signal<number>(0);
+  useWalletBalance = signal<boolean>(false);
+
   checkoutForm!: FormGroup;
 
   constructor() {
@@ -89,6 +92,7 @@ export class Checkout implements OnInit, OnDestroy {
           contactEmail: profile.email,
           contactPhone: profile.phoneNumber || ''
         });
+        this.profileService.getWalletBalance().subscribe(res => this.walletBalance.set(res));
         this.buildPassengerForms(profile);
       },
       error: () => {
@@ -133,5 +137,12 @@ export class Checkout implements OnInit, OnDestroy {
       return;
     }
     this.currentStep.set(2);
+  }
+
+  get remainingPriceToPay(): number {
+    if (this.useWalletBalance()) {
+      return Math.max(0, this.totalPrice() - this.walletBalance());
+    }
+    return this.totalPrice();
   }
 }

@@ -125,6 +125,9 @@
                                                 'color': user.role === 'Admin' ? '#dc2626' : user.role === 'CompanyStaff' ? '#d97706' : '#2563eb'}">
               {{ user.role }}
             </span>
+            @if (user.role === 'Member') {
+            <button class="edit-btn" style="background-color: 10b981; color: white; border: none;" (click)="openWalletModal(user)">Bakiye</button>
+            }
             <button class="edit-btn" (click)="startEdit(user)">Düzenle</button>
             <button class="delete-btn" (click)="deleteUser(user)">Sil</button>
           </div>
@@ -139,3 +142,28 @@
   </div>
 
 </div>
+
+
+<!-- CÜZDAN YÖNETİMİ MODALI -->
+<p-dialog header="Cüzdan Yönetimi" [visible]="isWalletModalOpen" (visibleChange)="isWalletModalOpen = $event" [modal]="true" [style]="{width: '400px'}">
+  @if (selectedUserForWallet) {
+    <div style="text-align: center; margin-bottom: 25px;">
+      <h3 style="margin: 0; color: #1e293b;">{{ selectedUserForWallet.firstName }} {{ selectedUserForWallet.lastName }}</h3>
+      <p style="color: #64748b; margin-top: 5px; font-size: 0.9rem;">Mevcut Bakiye</p>
+      <h2 style="margin: 0; color: #10b981; font-size: 2.5rem;">{{ currentUserBalance | number:'1.2-2' }} ₺</h2>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 25px;">
+      <label style="display: block; margin-bottom: 8px; color: #475569; font-weight: 500; text-align: center;">İşlem Tutarı (₺)</label>
+      <input type="number" class="form-control" [(ngModel)]="walletAmountInput" placeholder="Örn: 500" style="width: 100%; text-align: center; font-size: 1.5rem; padding: 15px; border-radius: 8px;">
+    </div>
+
+    <div style="display: flex; gap: 15px;">
+      <!-- Düş Butonu (Kırmızı) -->
+      <button pButton label="Bakiye Düş" icon="pi pi-minus-circle" severity="danger" [outlined]="true" style="flex: 1; padding: 10px;" [loading]="isAdjustingWallet" (click)="submitWalletAdjustment(false)"></button>
+      
+      <!-- Yükle Butonu (Yeşil) -->
+      <button pButton label="Bakiye Yükle" icon="pi pi-plus-circle" severity="success" style="flex: 1; padding: 10px;" [loading]="isAdjustingWallet" (click)="submitWalletAdjustment(true)"></button>
+    </div>
+  }
+</p-dialog>

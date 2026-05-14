@@ -3,6 +3,7 @@ using BusTicketingAI.Application.Events;
 using BusTicketingAI.Application.Features.Tickets.Queries.GetOccupiedSeats;
 using BusTicketingAI.Application.Interfaces;
 using BusTicketingAI.Domain.Entity;
+using BusTicketingAI.Domain.Enum;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -18,18 +19,21 @@ public record CheckoutCommand(
     string CardNumber, 
     string ExpirationDate, 
     string Cvv, 
-    decimal TotalAmount
+    decimal TotalAmount,
+    bool UseWalletBalance
 ) : IRequest<Guid>;
 
 public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
 {
+    private readonly IWalletTransactionRepository _walletTransactionRepository;
     private readonly ITicketRepository _ticketRepository;
     private readonly ITripRepository _tripRepository;
     private readonly IPaymentService _paymentService;
     private readonly IMemoryCache _memoryCache;
 
-    public CheckoutCommandHandler(ITicketRepository ticketRepository, IPaymentService paymentService, ITripRepository tripRepository, IMemoryCache memoryCache)
+    public CheckoutCommandHandler(ITicketRepository ticketRepository, IPaymentService paymentService, ITripRepository tripRepository, IMemoryCache memoryCache, IWalletTransactionRepository walletTransactionRepository)
     {
+        _walletTransactionRepository = walletTransactionRepository;
         _ticketRepository = ticketRepository;
         _tripRepository = tripRepository;
         _paymentService = paymentService;
@@ -45,11 +49,31 @@ public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
                 throw new Exception($"Üzgünüz, {passenger.SeatNumber} numaralı koltuk kısa süre önce satılmıştır.");
         }
 
-        var paymentRequest = new PaymentRequest(request.CardHolderName, request.CardNumber, request.ExpirationDate, request.Cvv, request.TotalAmount);
-        var paymentResult = await _paymentService.ProcessPaymentAsync(paymentRequest, cancellationToken);
+        decimal amountToPayFromCard = request.TotalAmount;
+        decimal amountToPayFromWallet = 0;
 
-        if (!paymentResult.IsSuccessful)
-            throw new Exception(paymentResult.ErrorMessage);
+        if (request.UseWalletBalance && request.UserId.HasValue)
+        {
+            decimal currentBalance = await _walletTransactionRepository.GetBalanceByUserIdAsync(request.UserId.Value, cancellationToken);
+            if (currentBalance >= request.TotalAmount)
+            {
+                amountToPayFromWallet = request.TotalAmount;
+                amountToPayFromCard = 0;
+            }
+            else if (currentBalance > 0)
+            {
+                amountToPayFromWallet = currentBalance;
+                amountToPayFromCard = request.TotalAmount - currentBalance;
+            }
+        }
+
+        if (amountToPayFromCard > 0)
+        {
+            var paymentRequest = new PaymentRequest(request.CardHolderName, request.CardNumber, request.ExpirationDate, request.Cvv, request.TotalAmount);
+            var paymentResult = await _paymentService.ProcessPaymentAsync(paymentRequest, cancellationToken);
+            if (!paymentResult.IsSuccessful)
+                throw new Exception(paymentResult.ErrorMessage);
+        }
 
         var trip = await _tripRepository.GetTripWithBusAndTerminalAsync(request.TripId, cancellationToken) ?? throw new Exception("Sefer bulunamadı.");
 
@@ -68,6 +92,7 @@ public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
                 Status = 1,
                 CreatedAt = DateTime.UtcNow
             };
+
             string pnrCode = ticket.Id.ToString()[..8].ToUpper();
 
             ticket.AddDomainEvent(new TicketPurchasedEvent(
@@ -82,10 +107,26 @@ public class CheckoutCommandHandler : IRequestHandler<CheckoutCommand, Guid>
                 Price: ticket.Price,
                 CompanyName: trip.Bus.Company.Name
             ));
+
             await _ticketRepository.AddAsync(ticket, cancellationToken);
         }
 
+        if (amountToPayFromWallet > 0 && request.UserId.HasValue)
+        {
+            var walletTransaction = new WalletTransaction
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId.Value,
+                Amount = -amountToPayFromWallet,
+                TransactionType = WalletTransactionType.TicketPurchase,
+                ReferenceId = request.TripId,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _walletTransactionRepository.AddAsync(walletTransaction, cancellationToken);
+        }
+
         await _ticketRepository.SaveChangesAsync(cancellationToken);
+
         var cacheKey = $"Trip_{request.TripId}_Locks";
         if (_memoryCache.TryGetValue(cacheKey, out List<OccupiedSeatDto>? lockedSeats) && lockedSeats != null)
         {

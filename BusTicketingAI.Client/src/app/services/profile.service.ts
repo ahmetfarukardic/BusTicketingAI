@@ -10,6 +10,7 @@ import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 export class ProfileService {
   private http = inject(HttpClient);
   private apiUrl = 'https://localhost:7202/api/profile';
+  private walletUrl = 'https://localhost:7202/api/wallets';
 
   getMyTickets(): Observable<PassengerTicketResponseDto> {
     return this.http.get<PassengerTicketResponseDto>(this.apiUrl);
@@ -33,5 +34,13 @@ export class ProfileService {
 
   unlockSeats(payload: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/unlock-seats`, payload);
+  }
+
+  getWalletBalance(): Observable<number> {
+    return this.http.get<number>(`${this.walletUrl}/balance`);
+  }
+
+  getWalletTransactions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.walletUrl}/transactions`);
   }
 }

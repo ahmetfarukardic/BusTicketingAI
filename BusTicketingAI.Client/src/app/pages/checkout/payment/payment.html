@@ -1,6 +1,7 @@
 <div style="padding: 20px; border: 1px dashed #cbd5e1; border-radius: 8px;">
   <h3 style="margin-top: 0; color: #475569;">Kart Bilgileri</h3>
       
+  @if (totalPrice > 0) {
     <form [formGroup]="paymentForm" style="display: flex; flex-direction: column; gap: 15px;">
       <input pInputText formControlName="cardHolderName" placeholder="Kart Üzerindeki İsim" />
       <input pInputText formControlName="cardNumber" placeholder="Kart Numarası" maxlength="16" />
@@ -10,10 +11,17 @@
         <input pInputText formControlName="cvv" placeholder="CVV" style="flex: 1;" maxlength="3" />
       </div>
     </form>
+  } @else {
+    <div style="text-align: center; padding: 20px;">
+      <i class="pi pi-check-circle" style="font-size: 3rem; color: #10b981; margin-bottom: 10px;"></i>
+      <h3 style="margin: 0; color: #166534;">Bilet Ücreti Tamamen Cüzdandan Karşılanacak</h3>
+      <p style="color: #475569; font-size: 0.9rem;">Kredi kartı bilgisi girmenize gerek yoktur.</p>
+    </div>
+  }
 
     <div style="margin-top: 30px;">
       <p-button 
-        label="{{ totalPrice }} ₺ Ödemeyi Tamamla" 
+        label="{{ totalPrice > 0 ? totalPrice + '₺ Ödemeyi Tamamla' : 'Bileti Onayla' }}" 
         severity="success" 
         styleClass="w-full" 
         [loading]="isLoading"
