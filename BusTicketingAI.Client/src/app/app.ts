@@ -16,12 +16,14 @@ export class App {
   protected readonly title = signal('BusTicketingAI.Client');
   private router = inject(Router);
   isAdminRoute = false;
+  isCompanyRoute = false;
 
   constructor() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.isAdminRoute = event.urlAfterRedirects.includes('/admin');
+      this.isCompanyRoute = event.urlAfterRedirects.includes('/company');
     });
   }
 }

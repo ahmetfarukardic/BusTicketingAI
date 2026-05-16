@@ -121,7 +121,12 @@ export class Trips implements OnInit {
     const trip = this.selectedTripForUpdate();
     if (!trip || !this.newTimeForUpdate()) return;
 
-    this.tripManagementService.updateTripTime(trip.tripId, { newDepartureTime: this.newTimeForUpdate() })
+    let formattedTime = this.newTimeForUpdate();
+    if (formattedTime.includes(' ')) {
+      formattedTime = formattedTime.replace(' ', 'T') + ':00';
+    }
+
+    this.tripManagementService.updateTripTime(trip.tripId, { newDepartureTime: formattedTime })
       .subscribe({
         next: (res) => {
           this.alertService.success('Başarılı', res.message);

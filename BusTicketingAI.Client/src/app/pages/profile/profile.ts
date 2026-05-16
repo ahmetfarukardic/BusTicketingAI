@@ -40,7 +40,9 @@ export class Profile implements OnInit{
       next: (res) => {
         this.activeTickets.set([...res.activeTickets]);
         this.pastTickets.set([...res.pastTickets]);
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.cdr.detectChanges();
+        }, 50);
       },
       error: (err) => {
         this.alertService.error('Hata', 'Biletleriniz yüklenirken bir sorun oluştu.');

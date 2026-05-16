@@ -44,10 +44,13 @@
           </div>
 
           <div class="pt-6 border-t border-slate-100 flex items-start gap-3">
-            <p-checkbox [binary]="true" [ngModel]="termsConfirmed()" [ngModelOptions]="{standalone: true}" [readonly]="true" inputId="terms"></p-checkbox>
-            <label for="terms" class="cursor-pointer text-slate-600 text-sm leading-tight">
-              <a (click)="openTermsModal()" class="text-brand font-bold hover:underline">Mesafeli Satış Sözleşmesi</a>'ni okudum ve onaylıyorum.
-            </label>
+            <div (click)="openTermsModal()" class="cursor-pointer mt-0.5" title="Sözleşmeyi Oku">
+              <p-checkbox [binary]="true" [ngModel]="termsConfirmed()" [ngModelOptions]="{standalone: true}" [readonly]="true" class="pointer-events-none"></p-checkbox>
+            </div>
+            
+            <div (click)="openTermsModal()" class="cursor-pointer text-slate-600 text-sm leading-tight select-none mt-1">
+              <span class="text-brand font-bold hover:underline">Mesafeli Satış Sözleşmesi</span>'ni okudum ve onaylıyorum.
+            </div>
           </div>
 
           <div class="text-right mt-6">
