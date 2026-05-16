@@ -1,24 +1,44 @@
-<div class="admin-wrapper">
+<div class="min-h-screen bg-surface-ground flex flex-col font-sans text-slate-800">
   
-  <nav class="admin-navbar">
-    <div class="brand">
-      <span>BusTicketingAI</span> 
-      <span class="badge">Admin Panel</span>
-    </div>
-    
-    <div class="nav-links">
-      <a routerLink="/admin/companies" routerLinkActive="active" class="nav-tab">Firma Yönetimi</a>
-      <a routerLink="/admin/users" routerLinkActive="active" class="nav-tab">Kullanıcı Yönetimi</a>
-    </div>
+  <nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-200 h-16 md:h-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex justify-between items-center gap-4">
+      
+      <div class="flex items-center gap-3 shrink-0">
+        <span class="text-xl md:text-2xl font-extrabold text-brand tracking-tight">BusTicketingAI</span>
+        <span class="bg-rose-500 text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wider shadow-sm flex items-center gap-1">
+          <i class="pi pi-shield hidden md:inline-block text-[10px]"></i> Admin
+        </span>
+      </div>
 
-    <div class="user-actions">
-      <span class="welcome-text">Hoş geldin, Sistem</span>
-      <button class="logout-btn" routerLink="/trips">Çıkış Yap</button>
+          <div class="flex items-center h-full gap-4 md:gap-8 overflow-x-auto no-scrollbar">
+            <a routerLink="/admin/companies" 
+               routerLinkActive="!text-brand !border-brand" 
+               class="text-slate-500 hover:text-brand font-bold text-sm h-full flex items-center border-b-4 border-transparent transition-all whitespace-nowrap">
+              <i class="pi pi-building mr-2"></i> Firma Yönetimi
+            </a>
+            <a routerLink="/admin/users" 
+               routerLinkActive="!text-brand !border-brand" 
+               class="text-slate-500 hover:text-brand font-bold text-sm h-full flex items-center border-b-4 border-transparent transition-all whitespace-nowrap">
+              <i class="pi pi-users mr-2"></i> Kullanıcı Yönetimi
+            </a>
+          </div>
+
+      <div class="flex items-center gap-4 shrink-0">
+        <span class="text-slate-500 font-medium text-sm hidden md:block">
+          Hoş geldin, <strong class="text-slate-800">Sistem</strong>
+        </span>
+        
+        <button 
+          class="bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white border border-rose-200 hover:border-rose-500 font-bold px-4 py-2 rounded-xl transition-all shadow-sm flex items-center gap-2 text-sm" 
+          (click)="logout()">
+          <span class="hidden sm:inline">Çıkış Yap</span> <i class="pi pi-sign-out"></i>
+        </button>
+      </div>
+
     </div>
-    
   </nav>
 
-  <main class="admin-content">
+  <main class="flex-1 w-full flex flex-col relative z-0">
     <router-outlet></router-outlet>
   </main>
 

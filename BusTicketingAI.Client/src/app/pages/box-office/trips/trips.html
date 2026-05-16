@@ -1,188 +1,257 @@
-<div class="admin-container trips-container">
+<div class="min-h-screen bg-surface-ground py-8 px-4">
+  <div class="max-w-7xl mx-auto">
 
-  <div class="admin-header" style="margin-bottom: 1.5rem;">
-    <h2>Sefer Yönetimi</h2>
-    <p class="header-subtitle">Yeni seferler oluşturun ve mevcut filonuzu yönetin.</p>
-  </div>
-
-  <!-- YENİ SEFER OLUŞTURMA KARTI -->
-  <div class="company-card form-card fade-in">
-    <div class="card-header">
-      <span class="header-icon">✨</span>
-      <h3>Yeni Sefer Oluştur</h3>
-    </div>
-    
-    <div class="form-grid">
-      <!-- OTOBÜS SEÇİMİ -->
-      <div class="form-group">
-        <label>Otobüs Seçimi</label>
-        <select class="form-control" [ngModel]="newTripForm().busId" (ngModelChange)="updateNewTripForm('busId', $event)">
-          <option [ngValue]="undefined" disabled selected>Plaka veya Otobüs Seçiniz</option>
-          @for (bus of buses(); track bus.id) {
-            <option [ngValue]="bus.id">{{ bus.plateNumber }} (Kapasite: {{ bus.seatCapacity }})</option>
-          }
-        </select>
-      </div>
-
-      <!-- KALKIŞ NOKTASI -->
-      <div class="form-group">
-        <label>Nereden (Kalkış)</label>
-        <select class="form-control" [ngModel]="newTripForm().originTerminalId" (ngModelChange)="updateNewTripForm('originTerminalId', $event)">
-          <option [ngValue]="undefined" disabled selected>Kalkış Noktası Seçiniz</option>
-          @for (terminal of terminals(); track terminal.id) {
-            <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
-          }
-        </select>
-      </div>
-
-      <!-- VARIŞ NOKTASI -->
-      <div class="form-group">
-        <label>Nereye (Varış)</label>
-        <select class="form-control" [ngModel]="newTripForm().destinationTerminalId" (ngModelChange)="updateNewTripForm('destinationTerminalId', $event)">
-          <option [ngValue]="undefined" disabled selected>Varış Noktası Seçiniz</option>
-          @for (terminal of terminals(); track terminal.id) {
-            <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
-          }
-        </select>
-      </div>
-
-      <!-- TARİH VE SAAT -->
-      <div class="form-group">
-        <label>Kalkış Tarihi ve Saati</label>
-        <input type="text" appFlatpickr [enableTime]="true" class="form-control" placeholder="Tarih ve Saat Seçin" [ngModel]="newTripForm().departureTime" (ngModelChange)="updateNewTripForm('departureTime', $event)">
-      </div>
-
-      <!-- TABAN FİYAT -->
-      <div class="form-group">
-        <label>Bilet Fiyatı (₺)</label>
-        <input type="number" class="form-control" placeholder="Örn: 450" [ngModel]="newTripForm().basePrice" (ngModelChange)="updateNewTripForm('basePrice', $event)">
-      </div>
-
-      <!-- TAHMİNİ SÜRE -->
-      <div class="form-group">
-        <label>Tahmini Süre (Dakika)</label>
-        <input type="number" class="form-control" placeholder="Örn: 360" [ngModel]="newTripForm().estimatedDuration" (ngModelChange)="updateNewTripForm('estimatedDuration', $event)">
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button class="save-btn create-btn" [disabled]="!newTripForm().busId || !newTripForm().originTerminalId || !newTripForm().destinationTerminalId || !newTripForm().departureTime || !newTripForm().basePrice || !newTripForm().estimatedDuration" (click)="submitNewTrip()">SEFERİ OLUŞTUR</button>
-    </div>
-  </div>
-
-  <!-- AKTİF SEFERLER LİSTESİ -->
-  <div class="trip-list-section fade-in" style="animation-delay: 0.1s;">
-    <h3 class="section-title">Aktif Seferleriniz</h3>
-    
-    <div class="company-list">
-      @for (trip of trips(); track trip.tripId) {
-        <div class="company-card trip-item">
-          
-          <div class="trip-info">
-            <h4>{{ trip.originTerminal }} ➔ {{ trip.destinationTerminal }}</h4>
-            <p class="trip-details">
-              <span class="detail-badge">🗓️ {{ trip.departureTime | date:'dd.MM.yyyy HH:mm' }}</span>
-              <span class="detail-badge">🚌 {{ trip.busPlate }}</span>
-            </p>
-          </div>
-          
-          <div class="trip-actions">
-            <span class="price-tag">{{ trip.price | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
-            <button class="action-btn manifesto-btn" (click)="openManifestoModal(trip)">Yolcu Listesi</button>
-            <button class="action-btn update-time-btn" (click)="openUpdateModal(trip)">Saati Güncelle</button>
-          </div>
-
+    <div class="bg-surface-card p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100 mb-8">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-14 h-14 bg-brand/10 rounded-2xl flex items-center justify-center text-brand">
+          <i class="pi pi-map text-3xl"></i>
         </div>
-      } @empty {
-        <div class="empty-state">
-          <p>Şu an için aktif bir seferiniz bulunmuyor.</p>
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-800 m-0">Sefer Yönetimi</h2>
+          <p class="text-slate-500 font-medium mt-1">Yeni seferler oluşturun ve mevcut filonuzu yönetin.</p>
         </div>
-      }
+      </div>
     </div>
-  </div>
 
-  <!-- SAAT GÜNCELLEME MODALI (POPUP) -->
-  @if (selectedTripForUpdate()) {
-    <div class="modal-overlay fade-in">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3>Sefer Saatini Güncelle</h3>
-          <button class="close-modal-btn" (click)="closeUpdateModal()">×</button>
-        </div>
+    <div class="bg-surface-card p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100 mb-8 border-t-4 border-t-brand animate-fadein relative overflow-hidden">
+      
+      <i class="pi pi-compass absolute -bottom-10 -right-10 text-9xl text-slate-50 opacity-50 pointer-events-none"></i>
+
+      <div class="flex items-center gap-2 mb-6 border-b border-slate-100 pb-4 relative z-10">
+        <i class="pi pi-sparkles text-brand font-bold text-lg"></i>
+        <h3 class="text-lg font-bold text-slate-800 m-0">Yeni Sefer Oluştur</h3>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
         
-        <div class="modal-body">
-          <p class="modal-desc">
-            <strong>{{ selectedTripForUpdate()?.originTerminal }} ➔ {{ selectedTripForUpdate()?.destinationTerminal }}</strong> seferinin kalkış saatini güncelliyorsunuz.
-            <br>
-            <span class="warning-text">Dikkat: Bilet satılmış seferlerin saati değiştirilemez!</span>
-          </p>
-          
-          <div class="form-group" style="margin-top: 1.5rem;">
-            <label>Yeni Kalkış Saati</label>
-            <input type="text" appFlatpickr [enableTime]="true" placeholder="Yeni Kalkış Saati" class="form-control" [ngModel]="newTimeForUpdate()" (ngModelChange)="newTimeForUpdate.set($event)">
-          </div>
-        </div>
-
-        <div class="modal-actions">
-          <button class="cancel-btn" (click)="closeUpdateModal()">İptal</button>
-          <button class="save-btn" (click)="submitTimeUpdate()">Saati Kaydet</button>
-        </div>
-      </div>
-    </div>
-  }
-
-</div>
-
-<!-- YOLCU MANİFESTOSU MODALI -->
-  @if (selectedTripForManifesto()) {
-    <div class="modal-overlay fade-in">
-      <div class="modal-card manifesto-card">
-        <div class="modal-header">
-          <div>
-            <h3>Yolcu Manifestosu</h3>
-            <p class="modal-subtitle">{{ selectedTripForManifesto()?.originTerminal }} ➔ {{ selectedTripForManifesto()?.destinationTerminal }} ({{ selectedTripForManifesto()?.busPlate }})</p>
-          </div>
-          <button class="close-modal-btn" (click)="closeManifestoModal()">×</button>
-        </div>
-        
-        <div class="modal-body manifesto-body">
-          <table class="manifesto-table">
-            <thead>
-              <tr>
-                <th>Koltuk</th>
-                <th>Yolcu Adı</th>
-                <th>TC Kimlik</th>
-                <th>Durum</th>
-                <th>İşlem</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (p of tripPassengers(); track p.ticketId) {
-                <tr [class.cancelled-row]="p.status === 0">
-                  <td class="seat-col"><strong>{{ p.seatNumber }}</strong></td>
-                  <td>{{ p.passengerName }}</td>
-                  <td>{{ p.identityNumber }}</td>
-                  <td>
-                    @if (p.status === 1) {
-                      <span class="status-badge active">Aktif</span>
-                    } @else {
-                      <span class="status-badge cancelled">İptal Edildi</span>
-                    }
-                  </td>
-                  <td>
-                    @if (p.status === 1) {
-                      <button class="cancel-ticket-btn" title="Bileti İptal Et" (click)="cancelPassengerTicket(p)">İptal Et</button>
-                    }
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="5" class="empty-table">Bu sefere henüz bilet satılmamış.</td>
-                </tr>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Otobüs Seçimi</label>
+          <div class="relative">
+            <i class="pi pi-car absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <select [ngModel]="newTripForm().busId" (ngModelChange)="updateNewTripForm('busId', $event)" class="w-full p-3.5 pl-12 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-bold text-slate-700 cursor-pointer appearance-none">
+              <option [ngValue]="undefined" disabled selected>Plaka veya Otobüs Seçiniz</option>
+              @for (bus of buses(); track bus.id) {
+                <option [ngValue]="bus.id">{{ bus.plateNumber }} (Kapasite: {{ bus.seatCapacity }})</option>
               }
-            </tbody>
-          </table>
+            </select>
+          </div>
         </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nereden (Kalkış)</label>
+          <div class="relative">
+            <i class="pi pi-map-marker absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <select [ngModel]="newTripForm().originTerminalId" (ngModelChange)="updateNewTripForm('originTerminalId', $event)" class="w-full p-3.5 pl-12 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-bold text-slate-700 cursor-pointer appearance-none">
+              <option [ngValue]="undefined" disabled selected>Kalkış Noktası Seçiniz</option>
+              @for (terminal of terminals(); track terminal.id) {
+                <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nereye (Varış)</label>
+          <div class="relative">
+            <i class="pi pi-flag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <select [ngModel]="newTripForm().destinationTerminalId" (ngModelChange)="updateNewTripForm('destinationTerminalId', $event)" class="w-full p-3.5 pl-12 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-bold text-slate-700 cursor-pointer appearance-none">
+              <option [ngValue]="undefined" disabled selected>Varış Noktası Seçiniz</option>
+              @for (terminal of terminals(); track terminal.id) {
+                <option [ngValue]="terminal.id">{{ terminal.cityName }} - {{ terminal.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Kalkış Tarihi ve Saati</label>
+          <div class="relative">
+            <i class="pi pi-calendar absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" appFlatpickr [enableTime]="true" placeholder="Tarih ve Saat Seçin" [ngModel]="newTripForm().departureTime" (ngModelChange)="updateNewTripForm('departureTime', $event)" class="w-full p-3.5 pl-12 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-bold text-slate-700 cursor-pointer">
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Bilet Fiyatı (₺)</label>
+          <div class="relative">
+            <i class="pi pi-tag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="number" placeholder="Örn: 450" [ngModel]="newTripForm().basePrice" (ngModelChange)="updateNewTripForm('basePrice', $event)" class="w-full p-3.5 pl-12 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-bold text-slate-700">
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Tahmini Süre (Dakika)</label>
+          <div class="relative">
+            <i class="pi pi-clock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="number" placeholder="Örn: 360" [ngModel]="newTripForm().estimatedDuration" (ngModelChange)="updateNewTripForm('estimatedDuration', $event)" class="w-full p-3.5 pl-12 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-bold text-slate-700">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="flex justify-end mt-6 pt-6 border-t border-slate-100 relative z-10">
+        <button class="w-full md:w-auto px-8 py-4 bg-brand hover:bg-brand-hover text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg" 
+          [disabled]="!newTripForm().busId || !newTripForm().originTerminalId || !newTripForm().destinationTerminalId || !newTripForm().departureTime || !newTripForm().basePrice || !newTripForm().estimatedDuration" 
+          (click)="submitNewTrip()">
+          <i class="pi pi-send"></i> SEFERİ OLUŞTUR
+        </button>
       </div>
     </div>
-  }
+
+    <div class="animate-fadein" style="animation-delay: 0.1s;">
+      <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-2 px-2">
+        <i class="pi pi-list text-brand"></i> Aktif Seferleriniz
+      </h3>
+      
+      <div class="flex flex-col gap-4">
+        @for (trip of trips(); track trip.tripId) {
+          
+          <div class="bg-surface-card border border-slate-200 rounded-2xl p-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border-l-4 border-l-emerald-500 group relative overflow-hidden">
+            
+            <div class="flex-1 w-full pl-2">
+              <h4 class="m-0 mb-3 text-lg md:text-xl font-extrabold text-slate-800">{{ trip.originTerminal }} <span class="text-slate-400 mx-2">➔</span> {{ trip.destinationTerminal }}</h4>
+              <div class="flex flex-wrap items-center gap-3 text-sm font-bold text-slate-500">
+                <span class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                  <i class="pi pi-calendar text-brand opacity-70"></i> {{ trip.departureTime | date:'dd.MM.yyyy HH:mm' }}
+                </span>
+                <span class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                  <i class="pi pi-car text-brand opacity-70"></i> {{ trip.busPlate }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="w-full lg:w-auto flex flex-wrap lg:flex-nowrap items-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+              <span class="text-3xl font-black text-emerald-500 mr-2 lg:mr-6">{{ trip.price | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+              
+              <button class="flex-1 lg:flex-none bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white border border-emerald-200 hover:border-emerald-500 font-bold px-4 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-sm" (click)="openManifestoModal(trip)">
+                <i class="pi pi-users"></i> Yolcu Listesi
+              </button>
+              
+              <button class="flex-1 lg:flex-none bg-amber-50 hover:bg-amber-500 text-amber-600 hover:text-white border border-amber-200 hover:border-amber-500 font-bold px-4 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-sm" (click)="openUpdateModal(trip)">
+                <i class="pi pi-clock"></i> Saati Güncelle
+              </button>
+            </div>
+
+          </div>
+
+        } @empty {
+          <div class="bg-white border border-dashed border-slate-300 rounded-3xl p-12 text-center flex flex-col items-center justify-center">
+            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+              <i class="pi pi-map text-3xl text-slate-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-700 mb-2">Sefer Bulunamadı</h3>
+            <p class="text-slate-500 font-medium">Şu an için aktif bir seferiniz bulunmuyor. Yukarıdan yeni bir sefer oluşturabilirsiniz.</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (selectedTripForUpdate()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fadein">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl relative">
+          
+          <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4">
+            <h3 class="text-xl font-bold text-slate-800 m-0 flex items-center gap-2">
+              <i class="pi pi-clock text-amber-500"></i> Sefer Saatini Güncelle
+            </h3>
+            <button class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-rose-500 hover:text-white transition-colors" (click)="closeUpdateModal()">
+              <i class="pi pi-times font-bold"></i>
+            </button>
+          </div>
+          
+          <div>
+            <p class="text-slate-600 font-medium leading-relaxed mb-4">
+              <strong>{{ selectedTripForUpdate()?.originTerminal }} ➔ {{ selectedTripForUpdate()?.destinationTerminal }}</strong> seferinin kalkış saatini güncelliyorsunuz.
+            </p>
+            <div class="bg-rose-50 border border-rose-200 p-3 rounded-xl flex items-center gap-3 text-rose-600 mb-6 shadow-sm">
+              <i class="pi pi-exclamation-triangle text-xl"></i>
+              <span class="text-sm font-bold">Dikkat: Bilet satılmış seferlerin saati değiştirilemez!</span>
+            </div>
+            
+            <div class="flex flex-col gap-1.5 mb-6">
+              <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Yeni Kalkış Saati</label>
+              <div class="relative">
+                <i class="pi pi-calendar absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" appFlatpickr [enableTime]="true" placeholder="Yeni Kalkış Saati" [ngModel]="newTimeForUpdate()" (ngModelChange)="newTimeForUpdate.set($event)" class="w-full p-4 pl-12 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition-all font-bold text-slate-700">
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            <button class="px-6 py-3 rounded-xl font-bold text-slate-600 bg-slate-200 hover:bg-slate-300 transition-colors" (click)="closeUpdateModal()">İptal</button>
+            <button class="px-6 py-3 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-md flex items-center gap-2" (click)="submitTimeUpdate()">
+              <i class="pi pi-save"></i> Kaydet
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+
+    @if (selectedTripForManifesto()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fadein">
+        <div class="bg-white w-full max-w-4xl rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-[90vh] flex flex-col">
+          
+          <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4 shrink-0">
+            <div>
+              <h3 class="text-xl font-bold text-slate-800 m-0 flex items-center gap-2">
+                <i class="pi pi-users text-emerald-500"></i> Yolcu Manifestosu
+              </h3>
+              <p class="text-slate-500 font-bold text-sm mt-1">
+                {{ selectedTripForManifesto()?.originTerminal }} ➔ {{ selectedTripForManifesto()?.destinationTerminal }} <span class="bg-slate-100 px-2 py-0.5 rounded ml-1 text-slate-700">{{ selectedTripForManifesto()?.busPlate }}</span>
+              </p>
+            </div>
+            <button class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-rose-500 hover:text-white transition-colors" (click)="closeManifestoModal()">
+              <i class="pi pi-times font-bold"></i>
+            </button>
+          </div>
+          
+          <div class="overflow-y-auto flex-1 custom-scrollbar pr-2 border border-slate-200 rounded-xl">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-50 sticky top-0 z-10 shadow-sm">
+                <tr>
+                  <th class="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">Koltuk</th>
+                  <th class="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">Yolcu Adı</th>
+                  <th class="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">TC Kimlik</th>
+                  <th class="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 text-center">Durum</th>
+                  <th class="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 text-center">İşlem</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                @for (p of tripPassengers(); track p.ticketId) {
+                  <tr class="hover:bg-slate-50 transition-colors" [ngClass]="p.status === 0 ? 'opacity-60 bg-slate-50/50' : ''">
+                    <td class="p-4">
+                      <span class="bg-slate-200 text-slate-700 font-black px-3 py-1.5 rounded-lg">{{ p.seatNumber }}</span>
+                    </td>
+                    <td class="p-4 font-bold text-slate-800" [ngClass]="p.status === 0 ? 'line-through text-slate-400' : ''">{{ p.passengerName }}</td>
+                    <td class="p-4 font-medium text-slate-500" [ngClass]="p.status === 0 ? 'line-through' : ''">{{ p.identityNumber }}</td>
+                    <td class="p-4 text-center">
+                      @if (p.status === 1) {
+                        <span class="bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-full text-xs">Aktif</span>
+                      } @else {
+                        <span class="bg-rose-100 text-rose-700 font-bold px-3 py-1 rounded-full text-xs">İptal Edildi</span>
+                      }
+                    </td>
+                    <td class="p-4 text-center">
+                      @if (p.status === 1) {
+                        <button class="bg-white border border-rose-200 text-rose-500 hover:bg-rose-500 hover:text-white hover:border-rose-500 font-bold px-3 py-1.5 rounded-lg transition-colors text-xs shadow-sm" title="Bileti İptal Et" (click)="cancelPassengerTicket(p)">
+                          İptal Et
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="p-10 text-center text-slate-500 font-medium">Bu sefere henüz bilet satılmamış.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

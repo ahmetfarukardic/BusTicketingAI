@@ -1,47 +1,92 @@
-<div class="auth-container">
-    <div class="auth-card">
-        <h2>Aramıza Katıl</h2>
-        <p class="subtitle">Yeni bir hesap oluşturun</p>
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+<div class="min-h-screen bg-surface-ground flex justify-center items-center py-10 px-4 relative overflow-hidden">
+  
+  <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Ad</label>
-                    <input type="text" formControlName="firstName" placeholder="Adınız">
-                </div>
-                <div class="form-group">
-                    <label>Soyad</label>
-                    <input type="text" formControlName="lastName" placeholder="Soyadınız">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" formControlName="email" placeholder="ornek@mail.com">
-            </div>
-            <div class="form-group">
-                <label>Şifre</label>
-                <input type="password" formControlName="password" placeholder="••••••••">
-            </div>
-
-            <div class="form-group">
-                <label>Şifre Tekrar</label>
-                <input type="password" formControlName="confirmPassword" placeholder="••••••••">
-                
-                <small *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('passwordMismatch')" 
-                       class="error-text" style="color: #ef4444; font-size: 0.8rem; margin-top: 5px; display: block;">
-                    Şifreler birbiriyle eşleşmiyor!
-                </small>
-            </div>
-
-            <div *ngIf="errorMessage" class="error-alert">{{ errorMessage }}</div>
-            <div *ngIf="successMessage" class="success-alert">{{ successMessage }}</div>
-
-            <button type="submit" [disabled]="registerForm.invalid">Kayıt Ol</button>
-        </form>
-
-        <div class="footer-link">
-            Zaten bir hesabın var mı? <a routerLink="/login">Giriş Yap</a>
-        </div>
+  <div class="bg-surface-card w-full max-w-lg p-8 sm:p-10 rounded-3xl shadow-2xl border border-slate-100 relative z-10">
+    
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner border border-slate-100">
+        <i class="pi pi-user-plus text-3xl text-brand"></i>
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">Aramıza Katıl</h2>
+      <p class="text-slate-500 font-medium">Yeni bir hesap oluşturun</p>
     </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex-1 flex flex-col">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Ad</label>
+          <div class="relative">
+            <i class="pi pi-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" formControlName="firstName" placeholder="Adınız" 
+              class="w-full p-4 pl-12 font-medium text-slate-700 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-slate-50 focus:bg-white" />
+          </div>
+        </div>
+        
+        <div class="flex-1 flex flex-col">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Soyad</label>
+          <div class="relative">
+            <i class="pi pi-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" formControlName="lastName" placeholder="Soyadınız" 
+              class="w-full p-4 pl-12 font-medium text-slate-700 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-slate-50 focus:bg-white" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Email</label>
+        <div class="relative">
+          <i class="pi pi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="email" formControlName="email" placeholder="ornek@mail.com" 
+            class="w-full p-4 pl-12 font-medium text-slate-700 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-slate-50 focus:bg-white" />
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Şifre</label>
+        <div class="relative">
+          <i class="pi pi-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="password" formControlName="password" placeholder="••••••••" 
+            class="w-full p-4 pl-12 font-medium text-slate-700 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-slate-50 focus:bg-white" />
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Şifre Tekrar</label>
+        <div class="relative">
+          <i class="pi pi-check-circle absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="password" formControlName="confirmPassword" placeholder="••••••••" 
+            class="w-full p-4 pl-12 font-medium text-slate-700 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-slate-50 focus:bg-white" />
+        </div>
+        
+        @if (registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
+          <small class="text-rose-500 text-xs font-bold mt-2 ml-1 animate-fadein">Şifreler birbiriyle eşleşmiyor!</small>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <div class="bg-rose-50 border border-rose-200 text-rose-600 p-4 rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2 shadow-sm animate-fadein">
+          <i class="pi pi-exclamation-circle text-lg"></i> {{ errorMessage }}
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-600 p-4 rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2 shadow-sm animate-fadein">
+          <i class="pi pi-check-circle text-lg"></i> {{ successMessage }}
+        </div>
+      }
+
+      <button type="submit" [disabled]="registerForm.invalid" 
+        class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-4 mt-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <span>Kayıt Ol</span> <i class="pi pi-user-plus"></i>
+      </button>
+
+    </form>
+
+    <div class="text-center mt-8 text-slate-500 font-medium">
+      Zaten bir hesabın var mı? <a routerLink="/login" class="text-brand font-bold hover:underline ml-1">Giriş Yap</a>
+    </div>
+  </div>
 </div>

@@ -1,116 +1,116 @@
-<div class="public-home-container">
+<div class="flex flex-col w-full min-h-screen">
 
-  <!-- ÜST KISIM: HERO (Görsel ve Arama Kutusu) -->
-  <div class="hero-section">
-    <div class="hero-content fade-in-down">
-      <h1>Yolculuğun Yeni Adresi</h1>
-      <p>Türkiye'nin her yerine güvenli, konforlu ve hızlı seyahat edin.</p>
-    </div>
-
-    <!-- Arama Kutusu (Floating Box) -->
-    <div class="search-box fade-in-up">
-      <!-- Kalkış -->
-      <div class="input-group">
-        <span class="input-icon">📍</span>
-        <div class="input-wrapper">
-          <label>Nereden</label>
-          <select [(ngModel)]="searchOriginId" class="modern-select">
-            <option [ngValue]="undefined" disabled selected>İl veya İlçe Seçin</option>
-            <option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="exchange-icon">⇄</div>
-
-      <!-- Varış -->
-      <div class="input-group">
-        <span class="input-icon">🏁</span>
-        <div class="input-wrapper">
-          <label>Nereye</label>
-          <select [(ngModel)]="searchDestinationId" class="modern-select">
-            <option [ngValue]="undefined" disabled selected>İl veya İlçe Seçin</option>
-            <option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Tarih -->
-      <div class="input-group date-group">
-        <span class="input-icon">📅</span>
-        <div class="input-wrapper">
-          <label>Gidiş Tarihi</label>
-          <input type="text" appFlatpickr [(ngModel)]="searchDate" class="modern-input" placeholder="Tarih Seçin">
-        </div>
-      </div>
-
-      <!-- Buton -->
-      <button class="search-btn" (click)="onSearch()">
-        <span>Sefer Bul</span>
-        <span class="btn-arrow">➔</span>
-      </button>
+  <div class="relative bg-gradient-to-r from-brand-dark to-brand text-white pt-24 pb-36 px-4">
+    <div class="max-w-5xl mx-auto text-center space-y-4">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">Yolculuğun Yeni Adresi</h1>
+      <p class="text-lg md:text-xl text-brand-100/90 font-light max-w-2xl mx-auto">Türkiye'nin her yerine güvenli, konforlu ve hızlı seyahat edin.</p>
     </div>
   </div>
 
-  <!-- ALT KISIM: SEFER LİSTESİ -->
-  <div class="results-section">
-    <div class="trips-list">
+  <div class="max-w-5xl mx-auto px-4 w-full relative -mt-16 z-10">
+    <div class="bg-surface-card rounded-2xl shadow-xl p-2 md:p-4 flex flex-col md:flex-row items-center justify-between gap-4 border border-slate-100">
+      
+      <div class="flex-1 flex items-center gap-3 w-full p-2 rounded-xl hover:bg-slate-50 transition-colors">
+        <div class="flex flex-col w-full">
+          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nereden</label>
+          <select [(ngModel)]="searchOriginId" class="w-full bg-transparent text-slate-800 font-medium focus:outline-none cursor-pointer appearance-none">
+            <option [ngValue]="undefined" disabled selected>İl veya İlçe Seçin</option>
+            @for (city of cities; track city.id) {
+              <option [value]="city.id">{{ city.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <button class="hidden md:flex w-10 h-10 bg-slate-100 rounded-full items-center justify-center text-slate-500 hover:bg-brand hover:text-white transition-all shadow-sm shrink-0 mx-2" 
+              (click)="swapCities()" 
+              title="Yönleri Değiştir">
+        <i class="pi pi-arrows-h font-bold"></i>
+      </button>
+
+      <div class="flex-1 flex items-center gap-3 w-full p-2 rounded-xl hover:bg-slate-50 transition-colors">
+        <div class="flex flex-col w-full">
+          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nereye</label>
+          <select [(ngModel)]="searchDestinationId" class="w-full bg-transparent text-slate-800 font-medium focus:outline-none cursor-pointer appearance-none">
+            <option [ngValue]="undefined" disabled selected>İl veya İlçe Seçin</option>
+            @for (city of cities; track city.id) {
+              <option [value]="city.id">{{ city.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="flex-1 flex items-center gap-3 w-full p-2 rounded-xl hover:bg-slate-50 transition-colors border-t md:border-t-0 md:border-l border-slate-100">
+        <div class="flex flex-col w-full">
+          <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">GİDİŞ TARİHİ</label>
+          <input type="text" appFlatpickr [(ngModel)]="searchDate" class="w-full bg-transparent text-slate-800 font-medium focus:outline-none cursor-pointer" placeholder="Tarih Seçin">
+        </div>
+      </div>
+
+      <button class="w-full md:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5" (click)="onSearch()">
+        <span>Sefer Bul</span>
+        <span>➔</span>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 w-full py-12">
+    <div class="flex flex-col gap-6">
       
       @for (trip of tripList; track trip.id) {
-        <div class="trip-card slide-in">
+        <div class="bg-surface-card border border-slate-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-lg transition-all group">
           
-          <!-- 1. Firma Bilgisi -->
-          <div class="company-section">
-            <div class="company-logo">🚌</div>
-            <span class="company-name">{{ trip.companyName || 'Bilinmeyen Firma' }}</span>
+          <div class="flex items-center gap-4 w-full md:w-1/4">
+            <span class="font-bold text-slate-800 text-lg">{{ trip.companyName || 'Bilinmeyen Firma' }}</span>
           </div>
 
-          <!-- 2. Rota ve Zaman Çizelgesi -->
-          <div class="route-section">
-            <div class="time-block">
-              <h4>{{ trip.time }}</h4>
-              <span class="city">{{ trip.from }}</span>
+          <div class="flex items-center justify-center gap-4 w-full md:w-2/4">
+            <div class="text-right">
+              <h4 class="font-bold text-2xl text-slate-800">{{ trip.time }}</h4>
+              <span class="text-sm text-slate-500 font-medium">{{ trip.from }}</span>
             </div>
             
-            <!-- Görsel Rota Çizgisi -->
-            <div class="journey-line">
-              <div class="dot"></div>
-              <div class="line"></div>
-              <div class="bus-icon-small">🚍</div>
-              <div class="dot"></div>
+            <div class="flex items-center gap-2 w-32 md:w-48">
+              <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+              <div class="h-0.5 flex-1 bg-slate-200 relative">
+                 <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-slate-400 text-sm group-hover:text-brand transition-colors"></div>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-brand"></div>
             </div>
 
-            <div class="time-block arrival">
-              <h4>{{ trip.arrivalTime }}</h4>
-              <span class="city">{{ trip.to }}</span>
+            <div class="text-left">
+              <h4 class="font-bold text-2xl text-slate-800">{{ trip.arrivalTime }}</h4>
+              <span class="text-sm text-slate-500 font-medium">{{ trip.to }}</span>
             </div>
           </div>
 
-          <!-- 3. Fiyat ve Aksiyon -->
-          <div class="action-section">
-            <div class="price-block">
-              <span class="price">{{ trip.price }} ₺</span>
-            </div>
+          <div class="flex flex-col items-end justify-center gap-3 w-full md:w-1/4 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 pl-0 md:pl-6">
+            <div class="text-3xl font-extrabold text-brand">{{ trip.price }} ₺</div>
 
             @if (trip.availableSeats <= 10 && trip.availableSeats > 0) {
-              <span class="warning-badge pulse">🔥 Son {{ trip.availableSeats }} Koltuk!</span>
+              <span class="bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1 rounded-full animate-pulse">Son {{ trip.availableSeats }} Koltuk!</span>
+            } @else if (trip.availableSeats === 0) {
+              <span class="bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full">Tükendi</span>
+            } @else {
+              <span class="text-emerald-600 text-xs font-medium px-2 py-1">{{ trip.availableSeats }} boş koltuk</span>
             }
 
-            @if (trip.availableSeats === 0) {
-              <span class="warning-badge sold-out">❌ Tükendi</span>
-            }
-
-            <button class="select-btn" [disabled]="trip.availableSeats === 0" (click)="onTripSelect(trip.id)">
+            <button 
+              class="w-full py-3 rounded-xl font-bold transition-all"
+              [ngClass]="trip.availableSeats === 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand hover:bg-brand-hover text-white shadow-md hover:shadow-lg'"
+              [disabled]="trip.availableSeats === 0" 
+              (click)="onTripSelect(trip.id)">
               {{ trip.availableSeats === 0 ? 'Dolu' : 'Koltuk Seç' }}
             </button>
           </div>
 
         </div>
       } @empty {
-        <!-- Eğer liste boşsa veya henüz arama yapılmadıysa -->
-        <div class="empty-state fade-in-up">
-          <h3>Bilet aramaya başlayın!</h3>
-          <p>Lütfen yukarıdan kalkış, varış ve tarih seçerek seferleri listeleyin.</p>
+        <div class="text-center py-20">
+          <div class="text-6xl mb-4 opacity-50">🗺️</div>
+          <h3 class="text-2xl font-bold text-slate-700 mb-2">Bilet aramaya başlayın!</h3>
+          <p class="text-slate-500">Lütfen yukarıdan kalkış, varış ve tarih seçerek seferleri listeleyin.</p>
         </div>
       }
 

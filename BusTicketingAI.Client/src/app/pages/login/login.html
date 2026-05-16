@@ -1,53 +1,94 @@
-<div class="login-container">
-    <div class="login-card">
-        <h2>Yolculuğa Başla</h2>
-        <p class="subtitle">Bilet almak için giriş yapın</p>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="email">Email Adresi</label>
-                <input type="email" id="email" formControlName="email" placeholder="ornek@mail.com">
-                <small *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-text">
-                    Geçerli bir email adresi giriniz.
-                </small>
-            </div>
-            <div class="form-group" style="margin-bottom: 0.5rem;">
-                <label>Şifre</label>
-                <input type="password" id="password" formControlName="password" placeholder="••••••••">
-                <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-text">
-                    Şifreniz en az 6 karakter olmalıdır.
-                </small>
-            </div>
-            <div class="forgot-password-container">
-                <a class="forgot-password-link" (click)="openResetModal()">Şifremi Unuttum</a>
-            </div>
-            <div *ngIf="errorMessage" class="error-alert">
-                {{ errorMessage }}
-            </div>
-            <button type="submit" [disabled]="loginForm.invalid">Giriş Yap</button>
+<div class="min-h-screen bg-surface-ground flex justify-center items-center py-10 px-4 relative overflow-hidden">
+  
+  <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        </form>
-
-        <div class="footer-link" style="text-align: center; margin-top: 1.5rem;">
-            Hesabın yok mu? <a routerLink="/register">Kayıt Ol</a>
-        </div>
+  <div class="bg-surface-card w-full max-w-md p-8 sm:p-10 rounded-3xl shadow-2xl border border-slate-100 relative z-10">
+    
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner border border-slate-100">
+        <i class="pi pi-compass text-3xl text-brand"></i>
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">Yolculuğa Başla</h2>
+      <p class="text-slate-500 font-medium">Bilet almak için giriş yapın</p>
     </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+      
+      <div class="flex flex-col">
+        <label for="email" class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Email Adresi</label>
+        <div class="relative">
+          <i class="pi pi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="email" id="email" formControlName="email" placeholder="ornek@mail.com" 
+            class="w-full p-4 pl-12 font-medium text-slate-700 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-slate-50 focus:bg-white" />
+        </div>
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <small class="text-rose-500 text-xs font-bold mt-2 ml-1">Geçerli bir email adresi giriniz.</small>
+        }
+      </div>
+
+      <div class="flex flex-col">
+        <label for="password" class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Şifre</label>
+        <div class="relative">
+          <i class="pi pi-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="password" id="password" formControlName="password" placeholder="••••••••" 
+            class="w-full p-4 pl-12 font-medium text-slate-700 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-slate-50 focus:bg-white" />
+        </div>
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <small class="text-rose-500 text-xs font-bold mt-2 ml-1">Şifreniz en az 6 karakter olmalıdır.</small>
+        }
+      </div>
+
+      <div class="text-right mt-2 mb-6">
+        <a (click)="openResetModal()" class="text-sm font-bold text-brand hover:text-brand-hover hover:underline cursor-pointer transition-colors">Şifremi Unuttum?</a>
+      </div>
+
+      @if (errorMessage) {
+        <div class="bg-rose-50 border border-rose-200 text-rose-600 p-4 rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2 mb-4 shadow-sm animate-fadein">
+          <i class="pi pi-exclamation-circle text-lg"></i> {{ errorMessage }}
+        </div>
+      }
+
+      <button type="submit" [disabled]="loginForm.invalid" 
+        class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <span>Giriş Yap</span> <i class="pi pi-sign-in"></i>
+      </button>
+
+    </form>
+
+    <div class="text-center mt-8 text-slate-500 font-medium">
+      Hesabın yok mu? <a routerLink="/register" class="text-brand font-bold hover:underline ml-1">Kayıt Ol</a>
+    </div>
+  </div>
 </div>
 
-<p-dialog header="Şifremi Unuttum" [(visible)]="isResetModalOpen" [modal]="true" [style]="{width: '400px', maxWidth: '90vw'}">
-    <p style="color: #64748b; margin-bottom: 1.5rem; line-height: 1.5;">
-        Hesabınıza kayıtlı e-posta adresinizi girin. Size şifrenizi sıfırlamanız için bir bağlantı göndereceğiz.
-    </p>
-    
-    <div style="display: flex; flex-direction: column; gap: 8px;">
-        <label style="font-weight: 500; color: #334155;">E-Posta Adresi</label>
-        <input pInputText type="email" [formControl]="resetEmailControl" placeholder="ornek@mail.com" style="width: 100%; padding: 0.75rem;">
-        <small *ngIf="resetEmailControl.invalid && resetEmailControl.touched" style="color: #ef4444;">Geçerli bir e-posta giriniz.</small>
+<p-dialog header="Şifre Kurtarma" [(visible)]="isResetModalOpen" [modal]="true" [style]="{width: '420px', maxWidth: '95vw'}">
+  <div class="text-center mb-6 mt-2">
+    <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100">
+      <i class="pi pi-key text-3xl text-blue-500"></i>
     </div>
+    <p class="text-slate-500 text-sm leading-relaxed font-medium">
+      Hesabınıza kayıtlı e-posta adresinizi girin. Size şifrenizi sıfırlamanız için güvenli bir bağlantı göndereceğiz.
+    </p>
+  </div>
+    
+  <div class="flex flex-col gap-2 mb-6">
+    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">E-Posta Adresi</label>
+    <div class="relative">
+       <i class="pi pi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+       <input pInputText type="email" [formControl]="resetEmailControl" placeholder="ornek@mail.com" class="w-full p-4 pl-12 font-medium text-slate-700 border-slate-300 rounded-xl focus:border-brand shadow-sm">
+    </div>
+    @if (resetEmailControl.invalid && resetEmailControl.touched) {
+      <small class="text-rose-500 text-xs font-bold mt-1 ml-1">Geçerli bir e-posta giriniz.</small>
+    }
+  </div>
 
-    <ng-template pTemplate="footer">
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <button pButton type="button" class="p-button-text p-button-secondary" (click)="isResetModalOpen = false">Vazgeç</button>
-            <button pButton type="button" class="p-button-primary" [disabled]="resetEmailControl.invalid" (click)="submitPasswordReset()">Şifremi Sıfırla</button>
-        </div>
-    </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3 w-full border-t border-slate-100 pt-4">
+      <button class="px-6 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" (click)="isResetModalOpen = false">Vazgeç</button>
+      <button class="px-6 py-3 rounded-xl font-bold text-white bg-brand hover:bg-brand-hover transition-colors shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex-1 flex justify-center items-center gap-2" [disabled]="resetEmailControl.invalid" (click)="submitPasswordReset()">
+        <span>Sıfırla</span> <i class="pi pi-send"></i>
+      </button>
+    </div>
+  </ng-template>
 </p-dialog>

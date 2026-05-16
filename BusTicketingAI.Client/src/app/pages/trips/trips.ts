@@ -107,4 +107,10 @@ export class Trips implements OnInit{
       this.router.navigate(['/login'], {queryParams: {returnUrl: `/trip/${tripId}/seats`} });
     }
   }
+
+  swapCities() {
+    const tempOrigin = this.searchOriginId;
+    this.searchOriginId = this.searchDestinationId;
+    this.searchDestinationId = tempOrigin;
+  }
 }

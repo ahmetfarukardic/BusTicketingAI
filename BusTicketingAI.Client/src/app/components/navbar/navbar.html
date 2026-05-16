@@ -1,28 +1,36 @@
-<nav class="navbar">
-    <div class="logo" routerLink="/trips">
-        BusTicketingAI
-    </div>
+<nav class="bg-brand text-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      
+      <div class="flex-shrink-0 cursor-pointer transition-transform hover:scale-105" routerLink="/trips">
+        <span class="text-2xl font-bold tracking-wider">BusTicketingAI</span>
+      </div>
 
-    <div class="nav-links">
+      <div class="flex items-center gap-4">
 
-        <ng-container *ngIf="isLoggedIn(); else loggedOut">
-            <span class="welcome-text">Hoş geldin, {{ getUserName() | titlecase }}</span>
-            @if (authService.hasRole('Member')) {
-                <p-button 
-                    label="Profilim" 
-                    icon="pi pi-user" 
-                    severity="info" 
-                    [text]="true" 
-                    routerLink="/profile">
-                </p-button>
-            }
-            <button class="logout-btn" (click)="logout()">Çıkış Yap</button>
-        </ng-container>
+        @if (isLoggedIn()) {
+          <span class="text-sm text-brand-100 hidden sm:block">Hoş geldin, <strong class="text-white">{{ getUserName() | titlecase }}</strong></span>
 
-        <ng-template #loggedOut>
-            <a routerLink="/login" class="nav-link">Giriş Yap</a>
-            <a routerLink="/register" class="nav-link">Kayıt Ol</a>
-        </ng-template>
+          @if (authService.hasRole('Member')) {
+            <p-button 
+              label="Profilim" 
+              icon="pi pi-user" 
+              [text]="true" 
+              styleClass="text-white hover:bg-brand-hover px-3 py-2 rounded-md transition-colors"
+              routerLink="/profile">
+            </p-button>
+          }
+
+          <button class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md font-medium transition-colors shadow-sm" (click)="logout()">
+            Çıkış Yap
+          </button>
+        } @else {
+          <a routerLink="/login" class="text-brand-100 hover:text-white font-medium px-3 py-2 transition-colors cursor-pointer">Giriş Yap</a>
+          
+          <a routerLink="/register" class="bg-white text-brand hover:bg-slate-100 px-4 py-2 rounded-md font-bold transition-colors shadow-sm cursor-pointer">Kayıt Ol</a>
+        }
         
+      </div>
     </div>
+  </div>
 </nav>

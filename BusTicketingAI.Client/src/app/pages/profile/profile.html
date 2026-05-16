@@ -1,140 +1,152 @@
-<div class="profile-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-  
-  <h2 style="color: #1e293b; margin-bottom: 20px;">
-    <i class="pi pi-user" style="font-size: 1.5rem; margin-right: 10px;"></i>
-    Profilim ve Biletlerim
-  </h2>
-
-  <!-- YENİ PRİMENG 20 TABS MİMARİSİ -->
-  <p-tabs value="0">
+<div class="min-h-screen bg-surface-ground py-10 px-4">
+  <div class="max-w-6xl mx-auto">
     
-    <!-- SEKME BAŞLIKLARI -->
-    <p-tablist>
-      <p-tab value="0">
-        <i class="pi pi-ticket" style="margin-right: 8px;"></i>
-        Aktif Biletlerim
-      </p-tab>
-      <p-tab value="1">
-        <i class="pi pi-history" style="margin-right: 8px;"></i>
-        Geçmiş Biletlerim
-      </p-tab>
-      <p-tab value="2">
-        <i class="pi pi-wallet" style="margin-right: 8px;"></i>
-        Cüzdanım
-      </p-tab>
-    </p-tablist>
+    <h2 class="text-3xl font-extrabold text-slate-800 mb-8 flex items-center gap-3">
+      <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-brand border border-slate-200">
+        <i class="pi pi-user text-xl"></i>
+      </div>
+      Profilim ve Biletlerim
+    </h2>
 
-    <!-- SEKME İÇERİKLERİ -->
-    <p-tabpanels>
-      
-      <!-- İÇERİK 0: AKTİF BİLETLER -->
-      <p-tabpanel value="0">
-        @if (activeTickets().length === 0) {
-          <div style="text-align: center; padding: 50px; background: #f8fafc; border-radius: 8px;">
-            <i class="pi pi-info-circle" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
-            <p style="color: #64748b; font-size: 1.1rem;">Şu an için aktif bir biletiniz bulunmuyor.</p>
-          </div>
-        } @else {
-          <div style="display: flex; flex-direction: column; gap: 15px;">
-            @for (ticket of activeTickets(); track ticket.ticketId) {
-              <!-- BİLET KARTI TASARIMI -->
-              <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
-                
-                <!-- Bilet Sol Taraf -->
-                <div style="flex: 1;">
-                  <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                    <span style="font-size: 1.2rem; font-weight: bold; color: #0f172a;">{{ ticket.departureTerminal }}</span>
-                    <i class="pi pi-arrow-right" style="color: #3b82f6;"></i>
-                    <span style="font-size: 1.2rem; font-weight: bold; color: #0f172a;">{{ ticket.arrivalTerminal }}</span>
-                  </div>
-                  <div style="display: flex; gap: 30px; color: #475569; font-size: 0.95rem;">
-                    <div><i class="pi pi-calendar" style="margin-right: 5px;"></i> {{ ticket.departureTime | date:'dd.MM.yyyy HH:mm' }}</div>
-                    <div><i class="pi pi-user" style="margin-right: 5px;"></i> Yolcu: {{ ticket.passengerName }}</div>
-                    <div><i class="pi pi-id-card" style="margin-right: 5px;"></i> Koltuk: <strong style="color: #3b82f6; font-size: 1.1rem;">{{ ticket.seatNumber }}</strong></div>
-                  </div>
-                </div>
+    <div class="bg-surface-card rounded-3xl shadow-xl border border-slate-100 p-2 md:p-6 overflow-hidden">
+      <p-tabs value="0">
+        
+        <p-tablist>
+          <p-tab value="0">
+            <i class="pi pi-ticket mr-2"></i> Aktif Biletlerim
+          </p-tab>
+          <p-tab value="1">
+            <i class="pi pi-history mr-2"></i> Geçmiş Biletlerim
+          </p-tab>
+          <p-tab value="2">
+            <i class="pi pi-wallet mr-2"></i> Cüzdanım
+          </p-tab>
+        </p-tablist>
 
-                <!-- Bilet Sağ Taraf -->
-                <div style="border-left: 2px dashed #cbd5e1; padding-left: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; min-width: 150px;">
-                  <div style="font-size: 1.4rem; font-weight: bold; color: #10b981;">
-                    {{ ticket.price | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}
-                  </div>
-                  <p-button label="İptal Et" icon="pi pi-times" severity="danger" [outlined]="true" size="small" (onClick)="cancelTicket(ticket)"></p-button>
-                </div>
+        <p-tabpanels class="pt-6">
+          
+          <p-tabpanel value="0">
+            @if (activeTickets().length === 0) {
+              <div class="flex flex-col items-center justify-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                <i class="pi pi-ticket text-6xl text-slate-300 mb-4"></i>
+                <h3 class="text-xl font-bold text-slate-600 mb-2">Bilet Bulunamadı</h3>
+                <p class="text-slate-500 font-medium">Şu an için aktif bir biletiniz bulunmuyor.</p>
+              </div>
+            } @else {
+              <div class="flex flex-col gap-6">
+                @for (ticket of activeTickets(); track ticket.ticketId) {
+                  <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-lg transition-all relative overflow-hidden group">
+                    
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-brand rounded-l-2xl"></div>
+                    
+                    <div class="flex-1 w-full pl-2">
+                      <div class="flex items-center gap-3 mb-4">
+                        <span class="text-xl font-extrabold text-slate-800">{{ ticket.departureTerminal }}</span>
+                        <i class="pi pi-arrow-right text-brand"></i>
+                        <span class="text-xl font-extrabold text-slate-800">{{ ticket.arrivalTerminal }}</span>
+                      </div>
+                      
+                      <div class="flex flex-wrap items-center gap-x-8 gap-y-3 text-slate-600 font-medium">
+                        <div class="flex items-center gap-2"><i class="pi pi-calendar text-brand opacity-70"></i> {{ ticket.departureTime | date:'dd.MM.yyyy HH:mm' }}</div>
+                        <div class="flex items-center gap-2"><i class="pi pi-user text-brand opacity-70"></i> Yolcu: <span class="text-slate-800">{{ ticket.passengerName }}</span></div>
+                        <div class="flex items-center gap-2"><i class="pi pi-id-card text-brand opacity-70"></i> Koltuk: <strong class="text-brand text-xl">{{ ticket.seatNumber }}</strong></div>
+                      </div>
+                    </div>
 
+                    <div class="w-full md:w-auto md:border-l-2 border-dashed border-slate-200 md:pl-8 flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 shrink-0">
+                      <div class="text-3xl font-extrabold text-emerald-500">
+                        {{ ticket.price | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}
+                      </div>
+                      <button 
+                        class="bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white border border-rose-200 hover:border-rose-500 font-bold py-2 px-6 rounded-xl transition-colors flex items-center gap-2 shadow-sm"
+                        (click)="cancelTicket(ticket)">
+                        <i class="pi pi-times"></i> İptal Et
+                      </button>
+                    </div>
+
+                  </div>
+                }
               </div>
             }
-          </div>
-        }
-      </p-tabpanel>
+          </p-tabpanel>
 
-      <!-- İÇERİK 1: GEÇMİŞ BİLETLER -->
-      <p-tabpanel value="1">
-        <p-table [value]="pastTickets()" [paginator]="true" [rows]="5" styleClass="p-datatable-striped">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Güzergah</th>
-              <th>Tarih</th>
-              <th>Koltuk</th>
-              <th>Fiyat</th>
-              <th>Durum</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-ticket>
-            <tr>
-              <td style="font-weight: 500;">{{ ticket.departureTerminal }} - {{ ticket.arrivalTerminal }}</td>
-              <td>{{ ticket.departureTime | date:'dd.MM.yyyy HH:mm' }}</td>
-              <td>{{ ticket.seatNumber }}</td>
-              <td>{{ ticket.price | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}</td>
-              <td>
-                <p-tag [value]="getStatusText(ticket.status)" [severity]="getSeverity(ticket.status)"></p-tag>
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="5" style="text-align: center; padding: 20px;">Geçmiş veya iptal edilmiş biletiniz bulunmuyor.</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabpanel>
+          <p-tabpanel value="1">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+              <p-table [value]="pastTickets()" [paginator]="true" [rows]="5" styleClass="p-datatable-striped p-datatable-sm md:p-datatable-lg">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold">Güzergah</th>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold">Tarih</th>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold text-center">Koltuk</th>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold">Fiyat</th>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold text-center">Durum</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ticket>
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="font-bold text-slate-700">{{ ticket.departureTerminal }} - {{ ticket.arrivalTerminal }}</td>
+                    <td class="text-slate-600 font-medium">{{ ticket.departureTime | date:'dd.MM.yyyy HH:mm' }}</td>
+                    <td class="text-center font-bold text-brand">{{ ticket.seatNumber }}</td>
+                    <td class="font-bold text-slate-800">{{ ticket.price | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}</td>
+                    <td class="text-center">
+                      <p-tag [value]="getStatusText(ticket.status)" [severity]="getSeverity(ticket.status)"></p-tag>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="5" class="text-center p-10 text-slate-500 font-medium">Geçmiş veya iptal edilmiş biletiniz bulunmuyor.</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </p-tabpanel>
 
-      <p-tabpanel value="2">
-        <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);">
-          <div>
-            <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Güncel Cüzdan Bakiyeniz</p>
-            <h1 style="margin: 5px 0 0 0; font-size: 3rem;">{{ walletBalance() | number:'1.2-2' }} ₺</h1>
-          </div>
-          <i class="pi pi-wallet" style="font-size: 5rem; opacity: 0.3;"></i>
-        </div>
+          <p-tabpanel value="2">
+            <div class="bg-gradient-to-br from-emerald-400 to-emerald-600 p-8 md:p-10 rounded-3xl text-white mb-8 flex justify-between items-center shadow-lg shadow-emerald-500/30 relative overflow-hidden">
+              <div class="relative z-10">
+                <p class="text-emerald-50 font-medium mb-1 text-lg">Güncel Cüzdan Bakiyeniz</p>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mt-2">{{ walletBalance() | number:'1.2-2' }} ₺</h1>
+              </div>
+              <i class="pi pi-wallet text-8xl md:text-9xl opacity-20 absolute -right-4 -bottom-8 md:-bottom-12 transform -rotate-12 pointer-events-none"></i>
+            </div>
 
-        <h3 style="color: #475569; margin-bottom: 15px;">Cüzdan Hareketleri</h3>
-        <p-table [value]="walletTransactions()" [paginator]="true" [rows]="5" styleClass="p-datatable-striped">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Tarih</th>
-              <th>İşlem Tipi</th>
-              <th>Tutar</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-tx>
-            <tr>
-              <td>{{ tx.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
-              <td>
-                <p-tag [value]="tx.transactionType === 'Refund' ? 'İade' : 'Bilet Alımı'" [severity]="tx.transactionType === 'Refund' ? 'success' : 'danger'"></p-tag>
-              </td>
-              <td [ngStyle]="{'color': tx.amount > 0 ? '#10b981' : '#ef4444', 'font-weight': 'bold'}">
-                {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount | number:'1.2-2' }} ₺
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr><td colspan="3" style="text-align: center; padding: 20px;">Henüz bir cüzdan hareketiniz bulunmuyor.</td></tr>
-          </ng-template>
-        </p-table>
-      </p-tabpanel>
+            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+              <i class="pi pi-history text-brand"></i> Cüzdan Hareketleri
+            </h3>
+            
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+              <p-table [value]="walletTransactions()" [paginator]="true" [rows]="5" styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold">Tarih</th>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold text-center">İşlem Tipi</th>
+                    <th class="!bg-slate-50 !text-slate-600 !font-bold text-right">Tutar</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-tx>
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="text-slate-600 font-medium">{{ tx.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+                    <td class="text-center">
+                      <p-tag [value]="tx.transactionType === 'Refund' ? 'İade' : 'Bilet Alımı'" [severity]="tx.transactionType === 'Refund' ? 'success' : 'danger'"></p-tag>
+                    </td>
+                    <td class="text-right font-extrabold text-lg" [ngClass]="tx.amount > 0 ? 'text-emerald-500' : 'text-rose-500'">
+                      {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount | number:'1.2-2' }} ₺
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="3" class="text-center p-10 text-slate-500 font-medium">Henüz bir cüzdan hareketiniz bulunmuyor.</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </p-tabpanel>
 
-    </p-tabpanels>
-  </p-tabs>
+        </p-tabpanels>
+      </p-tabs>
+    </div>
 
+  </div>
 </div>

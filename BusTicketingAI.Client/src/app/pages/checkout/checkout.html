@@ -1,97 +1,125 @@
-<div style="max-width: 900px; margin: 40px auto; display: flex; gap: 30px;">
-  
-  <div style="flex: 2; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+<div class="min-h-screen bg-surface-ground py-10 px-4">
+  <div class="max-w-5xl mx-auto flex flex-col lg:flex-row gap-8 items-start">
     
-    @if (currentStep() === 1) {
-      <h2 style="margin-top: 0;">Yolcu Bilgileri</h2>
-      <form [formGroup]="checkoutForm">
-        
-        <h4 style="color: #475569;">İletişim Bilgileri</h4>
-        <div style="display: flex; gap: 15px; margin-bottom: 30px;">
-          <input pInputText formControlName="contactEmail" placeholder="E-Posta" style="flex: 1" />
-          <input pInputText formControlName="contactPhone" placeholder="Telefon (05XX...)" style="flex: 1" />
-        </div>
-
-        <h4 style="color: #475569;">Koltuk Sahipleri</h4>
-        <div formArrayName="passengers" style="display: flex; flex-direction: column; gap: 20px;">
-          @for (passengerForm of passengersFormArray.controls; track $index) {
-            <div [formGroupName]="$index" style="padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px;">
-              <div style="font-weight: bold; color: #3b82f6; margin-bottom: 10px;">
-                {{ passengerForm.get('seatNumber')?.value }}. Koltuk Yolcusu
-              </div>
-              <div style="display: flex; gap: 15px;">
-                <input pInputText 
-                  [value]="passengerForm.get('gender')?.value === 'E' ? 'Erkek' : 'Kadın'" 
-                  readonly 
-                  style="flex: 0.5; background-color: #f8fafc; color: #94a3b8; cursor: not-allowed;" />
-                <input pInputText formControlName="fullName" placeholder="Ad Soyad" style="flex: 1" />
-                <input pInputText formControlName="tcIdentity" placeholder="T.C. Kimlik No" maxlength="11" style="flex: 1" />
-              </div>
-            </div>
-          }
-        </div>
-
-        <!-- SÖZLEŞME ONAY KISMI -->
-        <div style="margin-top: 30px; display: flex; align-items: center; gap: 10px;">
-          <p-checkbox [binary]="true" [ngModel]="termsConfirmed()" [ngModelOptions]="{standalone: true}" [readonly]="true" inputId="terms"></p-checkbox>
-          <label style="cursor: pointer;">
-            <a (click)="openTermsModal()" style="color: #0284c7; font-weight: bold; text-decoration: underline;">Mesafeli Satış Sözleşmesi</a>'ni okudum ve onaylıyorum.
-          </label>
-        </div>
-
-        <div style="margin-top: 30px; text-align: right;">
-          <p-button label="Ödeme Adımına Geç" (onClick)="goToPayment()"></p-button>
-        </div>
-      </form>
-    }
-
-    <!-- ADIM 2: CHILD COMPONENT ÇAĞRILIYOR -->
-    @if (currentStep() === 2) {
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-        <p-button icon="pi pi-arrow-left" [text]="true" (onClick)="currentStep.set(1)"></p-button>
-        <h2 style="margin: 0;">Güvenli Ödeme</h2>
-      </div>
+    <div class="w-full lg:w-2/3 bg-surface-card p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100 relative">
       
-      <!-- Checkout verisini Payment bileşenine yolluyoruz -->
-      <app-payment 
-        [orderData]="checkoutForm.getRawValue()"
-        [totalPrice]="remainingPriceToPay"
-        [originalPrice]="totalPrice()"
-        [tripId]="tripId()" 
-        [useWalletBalance]="useWalletBalance()"
-        (paymentSuccess)="isPaymentSuccessful = true">
-      </app-payment>
-    }
-  </div>
-
-  <div style="flex: 1; min-width: 250px;">
-    <div style="position: sticky; top: 20px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 4px solid #10b981;">
-      <h3 style="margin-top: 0; white-space: nowrap;">Sipariş Özeti</h3>
-      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
-        @if (walletBalance() > 0) {
-          <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <span style="color: #166534; font-weight: bold;">Cüzdan Bakiyesi:</span>
-              <span style="color: #166534; font-weight: bold;">{{ walletBalance() | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}</span>
+      @if (currentStep() === 1) {
+        <h2 class="text-2xl font-extrabold text-brand mb-6 border-b border-slate-100 pb-4">Yolcu Bilgileri</h2>
+        
+        <form [formGroup]="checkoutForm" class="space-y-8">
+          
+          <div>
+            <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="pi pi-phone text-brand"></i> İletişim Bilgileri
+            </h4>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <input pInputText formControlName="contactEmail" placeholder="E-Posta" class="w-full p-inputtext p-component" />
+              <input pInputText formControlName="contactPhone" placeholder="Telefon (05XX...)" class="w-full p-inputtext p-component" />
             </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="pi pi-users text-brand"></i> Koltuk Sahipleri
+            </h4>
+            <div formArrayName="passengers" class="flex flex-col gap-5">
+              @for (passengerForm of passengersFormArray.controls; track $index) {
+                <div [formGroupName]="$index" class="p-5 border border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                  <div class="font-bold text-brand mb-3 flex items-center gap-2">
+                    <span class="bg-brand/10 text-brand px-2 py-1 rounded-md text-sm">{{ passengerForm.get('seatNumber')?.value }}. Koltuk</span> Yolcusu
+                  </div>
+                  
+                  <div class="flex flex-col sm:flex-row gap-4">
+                    <input pInputText 
+                      [value]="passengerForm.get('gender')?.value === 'E' ? 'Erkek' : 'Kadın'" 
+                      readonly 
+                      class="w-full sm:w-1/4 p-inputtext p-component bg-slate-100 text-slate-500 cursor-not-allowed opacity-80" />
+                    
+                    <input pInputText formControlName="fullName" placeholder="Ad Soyad" class="w-full p-inputtext p-component" />
+                    <input pInputText formControlName="tcIdentity" placeholder="T.C. Kimlik No" maxlength="11" class="w-full p-inputtext p-component" />
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-slate-100 flex items-start gap-3">
+            <p-checkbox [binary]="true" [ngModel]="termsConfirmed()" [ngModelOptions]="{standalone: true}" [readonly]="true" inputId="terms"></p-checkbox>
+            <label for="terms" class="cursor-pointer text-slate-600 text-sm leading-tight">
+              <a (click)="openTermsModal()" class="text-brand font-bold hover:underline">Mesafeli Satış Sözleşmesi</a>'ni okudum ve onaylıyorum.
+            </label>
+          </div>
+
+          <div class="text-right mt-6">
+            <button 
+              class="bg-brand hover:bg-brand-hover text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md flex items-center gap-2 ml-auto"
+              (click)="goToPayment()">
+              <span>Ödeme Adımına Geç</span> <i class="pi pi-arrow-right"></i>
+            </button>
+          </div>
+
+        </form>
+      }
+
+      @if (currentStep() === 2) {
+        <div class="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
+          <button class="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors" (click)="currentStep.set(1)">
+            <i class="pi pi-arrow-left"></i>
+          </button>
+          <h2 class="text-2xl font-extrabold text-brand m-0">Güvenli Ödeme</h2>
+        </div>
+        
+        <app-payment 
+          [orderData]="checkoutForm.getRawValue()"
+          [totalPrice]="remainingPriceToPay"
+          [originalPrice]="totalPrice()"
+          [tripId]="tripId()" 
+          [useWalletBalance]="useWalletBalance()"
+          (paymentSuccess)="isPaymentSuccessful = true">
+        </app-payment>
+      }
+    </div>
+
+    <div class="w-full lg:w-1/3 min-w-[280px]">
+      <div class="sticky top-24 bg-surface-card p-6 rounded-3xl shadow-xl border border-slate-100 border-t-4 border-t-emerald-500">
+        <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+          <i class="pi pi-receipt text-emerald-500"></i> Sipariş Özeti
+        </h3>
+        
+        @if (walletBalance() > 0) {
+          <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl mb-6">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-emerald-800 font-bold text-sm">Cüzdan Bakiyesi:</span>
+              <span class="text-emerald-800 font-extrabold">{{ walletBalance() | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}</span>
+            </div>
+            <div class="flex items-center gap-2 border-t border-emerald-200/50 pt-3">
               <p-checkbox [binary]="true" [ngModel]="useWalletBalance()" (ngModelChange)="useWalletBalance.set($event)" inputId="useWallet"></p-checkbox>
-              <label for="useWallet" style="cursor: pointer; color: #15803d; font-size: 0.9rem;">Cüzdanımdan Düşülsün</label>
+              <label for="useWallet" class="cursor-pointer text-emerald-700 font-bold text-sm">Cüzdanımdan Düşülsün</label>
             </div>
           </div>
         }
-        <span style="white-space: nowrap; color: #475569;">Toplam Tutar</span>
-        <span style="font-weight: bold; color: #10b981; white-space: nowrap;">{{ totalPrice() }} ₺</span>
+
+        <div class="flex justify-between items-end pt-4">
+          <span class="text-slate-500 font-medium text-lg">Toplam Tutar</span>
+          <span class="text-3xl font-extrabold text-brand">{{ totalPrice() }} ₺</span>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
 
-<!-- SÖZLEŞME MODALI -->
 <p-dialog header="Mesafeli Satış Sözleşmesi" [visible]="isTermsModalOpen()" (visibleChange)="isTermsModalOpen.set($event)" [modal]="true" [style]="{width: '50vw'}">
-  <p>Bu alanda yasal sözleşme metni yer almaktadır. Lütfen okuyup onaylayınız.</p>
+  <div class="p-4 text-slate-600 leading-relaxed max-h-96 overflow-y-auto bg-slate-50 rounded-xl border border-slate-100">
+    <p>Bu alanda yasal sözleşme metni yer almaktadır. Lütfen okuyup onaylayınız.</p>
+    <p class="mt-4">1. Taraflar...</p>
+    <p>2. Sözleşme Konusu...</p>
+  </div>
   <ng-template pTemplate="footer">
-    <!-- TAM İSTEDİĞİN GİBİ: I Agree butonu burada ve checkbox'ı kilitliyor -->
-    <p-button label="Onayla" icon="pi pi-check" (onClick)="acceptTerms()"></p-button>
+    <button 
+      class="bg-brand hover:bg-brand-hover text-white font-bold py-2 px-6 rounded-lg transition-all shadow-md flex items-center gap-2"
+      (click)="acceptTerms()">
+      <i class="pi pi-check"></i> <span>Okudum, Onaylıyorum</span>
+    </button>
   </ng-template>
 </p-dialog>

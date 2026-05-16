@@ -1,62 +1,117 @@
-<div class="admin-container">
+<div class="min-h-screen bg-surface-ground py-8 px-4">
+  <div class="max-w-5xl mx-auto">
 
-  <div class="admin-header">
-    <h2>Firma Yönetimi</h2>
-    
-    <div class="action-bar">
-      <input type="text" class="search-input" placeholder="Firma adıyla ara..." [(ngModel)]="searchText">
+    <div class="bg-surface-card p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center text-brand">
+          <i class="pi pi-building text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-800 m-0">Firma Yönetimi</h2>
+      </div>
       
-      <button class="add-btn" (click)="toggleAddForm()" [class.btn-close]="showAddForm">
-        {{ showAddForm ? 'Kapat' : '+ Yeni Firma Ekle' }}
-      </button>
+      <div class="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+        <div class="relative w-full sm:w-64">
+          <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" class="w-full pl-11 p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-700 focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all" placeholder="Firma adıyla ara..." [(ngModel)]="searchText">
+        </div>
+        
+        <button 
+          class="font-bold py-3 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 whitespace-nowrap"
+          [ngClass]="showAddForm ? 'bg-rose-500 hover:bg-rose-600 text-white' : 'bg-brand hover:bg-brand-hover text-white'"
+          (click)="toggleAddForm()">
+          <i class="pi" [ngClass]="showAddForm ? 'pi-times' : 'pi-plus'"></i>
+          {{ showAddForm ? 'Kapat' : 'Yeni Firma' }}
+        </button>
+      </div>
     </div>
 
     @if (showAddForm) {
-      <div class="add-form-panel">
-        <input type="text" placeholder="Yeni Firma Adı (Örn: Metro Turizm)" 
-               [(ngModel)]="newCompanyName" (keyup.enter)="addCompany()">
-        <div class="form-actions">
-          <button class="save-btn" (click)="addCompany()">Kaydet</button>
-          <button class="cancel-btn" (click)="toggleAddForm()">İptal</button>
+      <div class="bg-slate-50 border-2 border-dashed border-slate-200 p-6 rounded-3xl mb-8 animate-fadein flex flex-col md:flex-row gap-4 items-center">
+        
+        <div class="w-full flex-1 relative">
+          <i class="pi pi-building absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" placeholder="Yeni Firma Adı (Örn: Metro Turizm)" [(ngModel)]="newCompanyName" (keyup.enter)="addCompany()" 
+            class="w-full pl-11 p-4 bg-white border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-medium text-slate-700 text-lg">
         </div>
+
+        <div class="flex gap-2 w-full md:w-auto shrink-0">
+          <button class="flex-1 md:flex-none px-6 py-4 rounded-xl font-bold text-slate-600 bg-slate-200 hover:bg-slate-300 transition-colors" (click)="toggleAddForm()">İptal</button>
+          <button class="flex-1 md:flex-none px-8 py-4 rounded-xl font-bold text-white bg-emerald-500 hover:bg-emerald-600 transition-colors shadow-md flex items-center justify-center gap-2" (click)="addCompany()">
+            <i class="pi pi-save"></i> Kaydet
+          </button>
+        </div>
+
       </div>
     }
-  </div>
 
-  <div class="company-list">
-    
-    @for (company of filteredCompanies; track company.id) {
-      <div class="company-card">
-        <div class="company-info">
+    <div class="flex flex-col gap-4">
+      @for (company of filteredCompanies; track company.id) {
+        
+        <div class="bg-surface-card border rounded-2xl p-5 transition-all shadow-sm hover:shadow-md"
+             [ngClass]="editingCompanyId === company.id ? 'border-amber-400 bg-amber-50/30' : 'border-slate-200'">
+          
           @if (editingCompanyId === company.id) {
-            <input type="text" class="edit-input form-control" [(ngModel)]="editCompanyName" (keyup.enter)="saveEdit(company.id)">
+            <div class="animate-fadein flex flex-col md:flex-row items-center gap-4">
+              <div class="relative w-full flex-1">
+                <i class="pi pi-pencil absolute left-4 top-1/2 -translate-y-1/2 text-amber-500"></i>
+                <input type="text" class="w-full pl-11 p-3 bg-white border border-slate-300 rounded-xl focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none font-extrabold text-slate-800 text-lg" [(ngModel)]="editCompanyName" (keyup.enter)="saveEdit(company.id)">
+              </div>
+              <div class="flex gap-2 w-full md:w-auto shrink-0">
+                <button class="flex-1 md:flex-none px-5 py-3 rounded-xl font-bold text-slate-600 bg-slate-200 hover:bg-slate-300 transition-colors" (click)="cancelEdit()">İptal</button>
+                <button class="flex-1 md:flex-none px-5 py-3 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm flex items-center justify-center gap-2" (click)="saveEdit(company.id)">
+                  <i class="pi pi-check"></i> Güncelle
+                </button>
+              </div>
+            </div>
+          
           } @else {
-            <h3>{{ company.name }}</h3>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center font-extrabold text-xl text-indigo-600 shadow-inner">
+                  {{ company.name.charAt(0) | uppercase }}
+                </div>
+                <div>
+                  <h3 class="m-0 text-lg font-extrabold text-slate-800">{{ company.name }}</h3>
+                  <div class="text-sm font-medium text-slate-500 mt-0.5">Kayıt ID: #{{ company.id }}</div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="px-4 py-1.5 rounded-lg font-bold text-sm bg-blue-50 border border-blue-200 text-blue-600 flex items-center gap-2">
+                  <i class="pi pi-car"></i> {{ company.totalBuses || 0 }} Otobüs
+                </span>
+
+                <div class="w-px h-6 bg-slate-200 hidden md:block mx-1"></div>
+                
+                <button class="bg-slate-50 hover:bg-amber-500 text-slate-600 hover:text-white border border-slate-200 hover:border-amber-500 font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm" (click)="startEdit(company)" title="Düzenle">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                
+                <button class="bg-slate-50 hover:bg-rose-500 text-slate-600 hover:text-white border border-slate-200 hover:border-rose-500 font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm" (click)="deleteCompany(company)" title="Sil">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+
+            </div>
           }
-          <p class="company-id">Kayıt ID: #{{ company.id }}</p>
         </div>
 
-        <div class="company-action">
-          <span class="bus-badge">{{ company.totalBuses }} Otobüs</span>
-          @if (editingCompanyId === company.id) {
-            <button class="save-btn" (click)="saveEdit(company.id)">Kaydet</button>
-            <button class="cancel-btn" (click)="cancelEdit()">İptal</button>
+      } @empty {
+        <div class="bg-white border border-dashed border-slate-300 rounded-3xl p-12 text-center flex flex-col items-center justify-center">
+          <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+            <i class="pi pi-building text-3xl text-slate-400"></i>
+          </div>
+          @if (searchText) {
+            <h3 class="text-xl font-bold text-slate-700 mb-2">Firma Bulunamadı</h3>
+            <p class="text-slate-500 font-medium">"{{ searchText }}" aramasına uygun bir firma sistemde yer almıyor.</p>
           } @else {
-            <button class="edit-btn" (click)="startEdit(company)">Düzenle</button>
-            <button class="delete-btn" (click)="deleteCompany(company)">Sil</button>
+            <h3 class="text-xl font-bold text-slate-700 mb-2">Henüz Firma Yok</h3>
+            <p class="text-slate-500 font-medium">Sistemde henüz kayıtlı firma bulunmuyor. Yukarıdan ilk firmanızı ekleyebilirsiniz.</p>
           }
         </div>
-      </div>
-      
-    } @empty {
-      <div class="empty-state">
-        @if (searchText) {
-          <p>"{{ searchText }}" aramasına uygun firma bulunamadı.</p>
-        } @else {
-          <p>Sistemde henüz kayıtlı firma bulunmuyor. Yukarıdan ilk firmanızı ekleyebilirsiniz.</p>
-        }
-      </div>
-    }
-  </div>
+      }
+    </div>
 
+  </div>
 </div>

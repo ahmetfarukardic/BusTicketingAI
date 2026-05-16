@@ -1,43 +1,59 @@
-<div class="admin-container">
+<div class="min-h-screen bg-surface-ground py-8 px-4">
+  <div class="max-w-5xl mx-auto">
 
-  <div class="admin-header">
-    <h2>Kullanıcı Yönetimi</h2>
-    <div class="action-bar">
-      <input type="text" class="search-input" placeholder="İsim veya Email ile ara..." [(ngModel)]="searchText">
-      <button class="add-btn" (click)="toggleAddForm()" [class.btn-close]="showAddForm">
-        {{ showAddForm ? 'Kapat' : '+ Yeni Kullanıcı' }}
-      </button>
+    <div class="bg-surface-card p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center text-brand">
+          <i class="pi pi-users text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-800 m-0">Kullanıcı Yönetimi</h2>
+      </div>
+      
+      <div class="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+        <div class="relative w-full sm:w-64">
+          <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" class="w-full pl-11 p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-700 focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all" placeholder="İsim veya Email ara..." [(ngModel)]="searchText">
+        </div>
+        
+        <button 
+          class="font-bold py-3 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 whitespace-nowrap"
+          [ngClass]="showAddForm ? 'bg-rose-500 hover:bg-rose-600 text-white' : 'bg-brand hover:bg-brand-hover text-white'"
+          (click)="toggleAddForm()">
+          <i class="pi" [ngClass]="showAddForm ? 'pi-times' : 'pi-plus'"></i>
+          {{ showAddForm ? 'Kapat' : 'Yeni Kullanıcı' }}
+        </button>
+      </div>
     </div>
 
     @if (showAddForm) {
-      <div class="add-form-stacked">
-        <h3>Yeni Kullanıcı Ekle</h3>
-        <p class="panel-desc">Sisteme yeni bir kullanıcı eklemek için aşağıdaki bilgileri doldurun.</p>
+      <div class="bg-slate-50 border-2 border-dashed border-slate-200 p-6 md:p-8 rounded-3xl mb-8 animate-fadein">
+        <h3 class="text-xl font-bold text-slate-800 mb-1">Yeni Kullanıcı Ekle</h3>
+        <p class="text-slate-500 font-medium mb-6">Sisteme yeni bir kullanıcı dahil etmek için bilgileri doldurun.</p>
 
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Ad</label>
-            <input type="text" placeholder="Kullanıcının adını girin..." [(ngModel)]="newUser.firstName" class="form-control">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Ad</label>
+            <input type="text" placeholder="Ad" [(ngModel)]="newUser.firstName" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-medium text-slate-700">
           </div>
 
-          <div class="form-group">
-            <label>Soyad</label>
-            <input type="text" placeholder="Kullanıcının soyadını girin..." [(ngModel)]="newUser.lastName" class="form-control">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Soyad</label>
+            <input type="text" placeholder="Soyad" [(ngModel)]="newUser.lastName" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-medium text-slate-700">
           </div>
 
-          <div class="form-group">
-            <label>E-posta</label>
-            <input type="email" placeholder="example@company.com" [(ngModel)]="newUser.email" class="form-control">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">E-posta</label>
+            <input type="email" placeholder="ornek@mail.com" [(ngModel)]="newUser.email" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-medium text-slate-700">
           </div>
 
-          <div class="form-group">
-            <label>Şifre</label>
-            <input type="password" placeholder="Min. 8 karakter..." [(ngModel)]="newUser.password" class="form-control">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Şifre</label>
+            <input type="password" placeholder="Min. 6 karakter" [(ngModel)]="newUser.password" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all font-medium text-slate-700">
           </div>
           
-          <div class="form-group">
-            <label>Rol</label>
-            <select [(ngModel)]="newUser.role" class="form-control">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Kullanıcı Rolü</label>
+            <select [(ngModel)]="newUser.role" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-brand outline-none transition-all font-medium text-slate-700 cursor-pointer">
               <option value="Member">Standart Üye (Member)</option>
               <option value="CompanyStaff">Firma Yetkilisi (Staff)</option>
               <option value="Admin">Sistem Yöneticisi (Admin)</option>
@@ -45,9 +61,9 @@
           </div>
 
           @if (newUser.role === 'CompanyStaff') {
-            <div class="form-group fade-in">
-              <label>Firma Seçimi</label>
-              <select [(ngModel)]="newUser.companyId" class="form-control">
+            <div class="flex flex-col gap-1.5 animate-fadein">
+              <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Firma Seçimi</label>
+              <select [(ngModel)]="newUser.companyId" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-brand outline-none transition-all font-medium text-slate-700 cursor-pointer">
                 <option [ngValue]="null" disabled selected>Hangi Firmanın Yetkilisi?</option>
                 @for (company of companies; track company.id) {
                   <option [value]="company.id">{{ company.name }}</option>
@@ -57,113 +73,149 @@
           }
         </div>
 
-        <div class="form-actions">
-          <button class="save-btn" (click)="addUser()">Kaydet</button>
-          <button class="cancel-btn" (click)="toggleAddForm()">İptal</button>
+        <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-200">
+          <button class="px-6 py-3 rounded-xl font-bold text-slate-600 bg-slate-200 hover:bg-slate-300 transition-colors" (click)="toggleAddForm()">İptal</button>
+          <button class="px-6 py-3 rounded-xl font-bold text-white bg-emerald-500 hover:bg-emerald-600 transition-colors shadow-md flex items-center gap-2" (click)="addUser()">
+            <i class="pi pi-save"></i> Kaydet
+          </button>
         </div>
       </div>
     }
-  </div>
 
-  <div class="company-list">
-    @for (user of filteredUsers; track user.id) {
-      <div class="company-card" [class.is-editing]="editingUserId === user.id">
+    <div class="flex flex-col gap-4">
+      @for (user of filteredUsers; track user.id) {
         
-        @if (editingUserId === user.id) {
-          <div class="edit-form-stacked fade-in">
-            <div class="form-grid">
-              <div class="form-group">
-                <label>Ad</label>
-                <input type="text" class="form-control" [(ngModel)]="editUser.firstName" placeholder="Ad">
+        <div class="bg-surface-card border rounded-2xl p-5 transition-all shadow-sm hover:shadow-md"
+             [ngClass]="editingUserId === user.id ? 'border-amber-400 bg-amber-50/30' : 'border-slate-200'">
+          
+          @if (editingUserId === user.id) {
+            <div class="animate-fadein">
+              <div class="flex items-center gap-2 mb-4 text-amber-600 font-bold">
+                <i class="pi pi-pencil"></i> Kullanıcıyı Düzenle
               </div>
-
-              <div class="form-group">
-                <label>Soyad</label>
-                <input type="text" class="form-control" [(ngModel)]="editUser.lastName" placeholder="Soyad">
-              </div>
-
-              <div class="form-group">
-                <label>E-posta</label>
-                <input type="email" class="form-control" [(ngModel)]="editUser.email" placeholder="Email">
-              </div>
-
-              <div class="form-group">
-                <label>Rol</label>
-                <select [(ngModel)]="editUser.role" class="form-control">
-                  <option value="Member">Standart Üye (Member)</option>
-                  <option value="CompanyStaff">Firma Yetkilisi (Staff)</option>
-                  <option value="Admin">Sistem Yöneticisi (Admin)</option>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <input type="text" class="w-full p-3 bg-white border border-slate-300 rounded-xl focus:border-amber-500 outline-none font-medium text-slate-700" [(ngModel)]="editUser.firstName" placeholder="Ad">
+                <input type="text" class="w-full p-3 bg-white border border-slate-300 rounded-xl focus:border-amber-500 outline-none font-medium text-slate-700" [(ngModel)]="editUser.lastName" placeholder="Soyad">
+                <input type="email" class="w-full p-3 bg-white border border-slate-300 rounded-xl focus:border-amber-500 outline-none font-medium text-slate-700" [(ngModel)]="editUser.email" placeholder="Email">
+                <select [(ngModel)]="editUser.role" class="w-full p-3 bg-white border border-slate-300 rounded-xl focus:border-amber-500 outline-none font-medium text-slate-700 cursor-pointer">
+                  <option value="Member">Üye</option>
+                  <option value="CompanyStaff">Firma Yetkilisi</option>
+                  <option value="Admin">Admin</option>
                 </select>
               </div>
 
               @if (editUser.role === 'CompanyStaff') {
-                <div class="form-group fade-in">
-                  <label>Firma Seçimi</label>
-                  <select [(ngModel)]="editUser.companyId" class="form-control">
-                    <option [ngValue]="null" disabled selected>Hangi Firmanın Yetkilisi?</option>
+                <div class="mb-4 animate-fadein">
+                  <select [(ngModel)]="editUser.companyId" class="w-full md:w-1/4 p-3 bg-white border border-slate-300 rounded-xl focus:border-amber-500 outline-none font-medium text-slate-700 cursor-pointer">
+                    <option [ngValue]="null" disabled selected>Firma Seçin</option>
                     @for (company of companies; track company.id) {
                       <option [value]="company.id">{{ company.name }}</option>
                     }
                   </select>
                 </div>
               }
+
+              <div class="flex justify-end gap-3 pt-4 border-t border-amber-200">
+                <button class="px-5 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-200 hover:bg-slate-300 transition-colors" (click)="cancelEdit()">İptal</button>
+                <button class="px-5 py-2.5 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow-sm flex items-center gap-2" (click)="saveEdit(user.id)">
+                  <i class="pi pi-check"></i> Güncelle
+                </button>
+              </div>
             </div>
+          
+          } @else {
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shadow-inner"
+                     [ngClass]="{
+                       'bg-rose-100 text-rose-600': user.role === 'Admin',
+                       'bg-amber-100 text-amber-600': user.role === 'CompanyStaff',
+                       'bg-blue-100 text-blue-600': user.role === 'Member'
+                     }">
+                  {{ user.firstName.charAt(0) | uppercase }}
+                </div>
+                <div>
+                  <h3 class="m-0 text-lg font-extrabold text-slate-800">{{ user.firstName }} {{ user.lastName }}</h3>
+                  <div class="flex items-center gap-2 text-sm font-medium text-slate-500 mt-0.5">
+                    <i class="pi pi-envelope text-xs"></i> {{ user.email }}
+                  </div>
+                </div>
+              </div>
 
-            <div class="form-actions">
-              <button class="save-btn" (click)="saveEdit(user.id)">Güncelle</button>
-              <button class="cancel-btn" (click)="cancelEdit()">İptal</button>
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="px-3 py-1 rounded-full font-bold text-xs border uppercase tracking-wider"
+                      [ngClass]="{
+                        'bg-rose-50 border-rose-200 text-rose-600': user.role === 'Admin',
+                        'bg-amber-50 border-amber-200 text-amber-600': user.role === 'CompanyStaff',
+                        'bg-blue-50 border-blue-200 text-blue-600': user.role === 'Member'
+                      }">
+                  {{ user.role }}
+                </span>
+
+                <div class="w-px h-6 bg-slate-200 hidden md:block mx-1"></div>
+
+                @if (user.role === 'Member') {
+                  <button class="bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white border border-emerald-200 hover:border-emerald-500 font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm" (click)="openWalletModal(user)" title="Cüzdan Yönetimi">
+                    <i class="pi pi-wallet"></i> Bakiye
+                  </button>
+                }
+                
+                <button class="bg-slate-50 hover:bg-amber-500 text-slate-600 hover:text-white border border-slate-200 hover:border-amber-500 font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm" (click)="startEdit(user)" title="Düzenle">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                
+                <button class="bg-slate-50 hover:bg-rose-500 text-slate-600 hover:text-white border border-slate-200 hover:border-rose-500 font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm" (click)="deleteUser(user)" title="Sil">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+
             </div>
-          </div>
-        } @else {
-          <div class="company-info" style="flex: 2;">
-            <h3>{{ user.firstName }} {{ user.lastName }}</h3>
-            <p class="company-id">📧 {{ user.email }}</p>
-          </div>
+          }
+        </div>
 
-          <div class="company-action" style="flex: 2; justify-content: flex-end;">
-            <span class="bus-badge" [ngStyle]="{'background': user.role === 'Admin' ? '#fee2e2' : user.role === 'CompanyStaff' ? '#fef3c7' : '#eff6ff', 
-                                                'color': user.role === 'Admin' ? '#dc2626' : user.role === 'CompanyStaff' ? '#d97706' : '#2563eb'}">
-              {{ user.role }}
-            </span>
-            @if (user.role === 'Member') {
-            <button class="edit-btn" style="background-color: 10b981; color: white; border: none;" (click)="openWalletModal(user)">Bakiye</button>
-            }
-            <button class="edit-btn" (click)="startEdit(user)">Düzenle</button>
-            <button class="delete-btn" (click)="deleteUser(user)">Sil</button>
+      } @empty {
+        <div class="bg-white border border-dashed border-slate-300 rounded-3xl p-12 text-center flex flex-col items-center justify-center">
+          <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+            <i class="pi pi-search text-3xl text-slate-400"></i>
           </div>
-        }
+          <h3 class="text-xl font-bold text-slate-700 mb-2">Kullanıcı Bulunamadı</h3>
+          <p class="text-slate-500 font-medium">Aramanıza uygun bir kayıt sistemde yer almıyor.</p>
+        </div>
+      }
+    </div>
 
-      </div>
-    } @empty {
-      <div class="empty-state">
-        <p>Aramanıza uygun kullanıcı bulunamadı.</p>
-      </div>
-    }
   </div>
-
 </div>
 
-
-<!-- CÜZDAN YÖNETİMİ MODALI -->
 <p-dialog header="Cüzdan Yönetimi" [visible]="isWalletModalOpen" (visibleChange)="isWalletModalOpen = $event" [modal]="true" [style]="{width: '400px'}">
   @if (selectedUserForWallet) {
-    <div style="text-align: center; margin-bottom: 25px;">
-      <h3 style="margin: 0; color: #1e293b;">{{ selectedUserForWallet.firstName }} {{ selectedUserForWallet.lastName }}</h3>
-      <p style="color: #64748b; margin-top: 5px; font-size: 0.9rem;">Mevcut Bakiye</p>
-      <h2 style="margin: 0; color: #10b981; font-size: 2.5rem;">{{ currentUserBalance | number:'1.2-2' }} ₺</h2>
+    <div class="text-center mb-6 mt-2">
+      <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm border border-emerald-100">
+        <i class="pi pi-wallet text-3xl text-emerald-500"></i>
+      </div>
+      <h3 class="text-xl font-extrabold text-slate-800 m-0">{{ selectedUserForWallet.firstName }} {{ selectedUserForWallet.lastName }}</h3>
+      <p class="text-slate-500 font-medium mt-1">Mevcut Bakiye</p>
+      <h2 class="text-4xl font-black text-emerald-500 mt-1">{{ currentUserBalance | number:'1.2-2' }} ₺</h2>
     </div>
 
-    <div class="form-group" style="margin-bottom: 25px;">
-      <label style="display: block; margin-bottom: 8px; color: #475569; font-weight: 500; text-align: center;">İşlem Tutarı (₺)</label>
-      <input type="number" class="form-control" [(ngModel)]="walletAmountInput" placeholder="Örn: 500" style="width: 100%; text-align: center; font-size: 1.5rem; padding: 15px; border-radius: 8px;">
+    <div class="flex flex-col gap-2 mb-8">
+      <label class="text-xs font-bold text-slate-500 uppercase tracking-wider text-center">İşlem Tutarı (₺)</label>
+      <input type="number" [(ngModel)]="walletAmountInput" placeholder="Örn: 500" class="w-full text-center text-2xl font-bold p-4 bg-slate-50 border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-slate-800">
     </div>
 
-    <div style="display: flex; gap: 15px;">
-      <!-- Düş Butonu (Kırmızı) -->
-      <button pButton label="Bakiye Düş" icon="pi pi-minus-circle" severity="danger" [outlined]="true" style="flex: 1; padding: 10px;" [loading]="isAdjustingWallet" (click)="submitWalletAdjustment(false)"></button>
+    <div class="flex gap-4">
+      <button 
+        class="flex-1 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white border border-rose-200 hover:border-rose-500 font-bold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+        (click)="submitWalletAdjustment(false)" [disabled]="isAdjustingWallet">
+        <i class="pi pi-minus-circle"></i> Bakiye Düş
+      </button>
       
-      <!-- Yükle Butonu (Yeşil) -->
-      <button pButton label="Bakiye Yükle" icon="pi pi-plus-circle" severity="success" style="flex: 1; padding: 10px;" [loading]="isAdjustingWallet" (click)="submitWalletAdjustment(true)"></button>
+      <button 
+        class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+        (click)="submitWalletAdjustment(true)" [disabled]="isAdjustingWallet">
+        <i class="pi pi-plus-circle"></i> Bakiye Yükle
+      </button>
     </div>
   }
 </p-dialog>
