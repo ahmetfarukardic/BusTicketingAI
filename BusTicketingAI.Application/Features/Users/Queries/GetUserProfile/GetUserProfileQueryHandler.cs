@@ -22,7 +22,9 @@ public class GetUserProfileQueryHandler : IRequestHandler<GetUserProfileQuery, U
             user.FirstName,
             user.LastName,
             user.Email ?? string.Empty,
-            user.PhoneNumber ?? string.Empty
+            user.IdentityNumber ?? string.Empty,
+            user.PhoneNumber ?? string.Empty,
+            user.Gender ?? string.Empty
             );
     }
 }

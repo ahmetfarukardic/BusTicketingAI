@@ -114,7 +114,8 @@ export class Checkout implements OnInit, OnDestroy {
 
       if (index === 0 && userProfile){
         passengerGroup.patchValue({
-          fullName: `${userProfile.firstName} ${userProfile.lastName}`.trim()
+          fullName: `${userProfile.firstName} ${userProfile.lastName}`.trim(),
+          tcIdentity: userProfile.identityNumber || ''
         });
       }
       

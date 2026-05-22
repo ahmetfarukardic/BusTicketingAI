@@ -1,5 +1,4 @@
-﻿using BusTicketingAI.Application.Features.Cities.Queries.GetAllCities;
-using BusTicketingAI.Application.Interfaces;
+﻿using BusTicketingAI.Application.Interfaces;
 using BusTicketingAI.Domain.Entity;
 using BusTicketingAI.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -15,5 +14,10 @@ public class CityRepository : GenericRepository<City>, ICityRepository
         return await _context.Cities
             .OrderBy(c => c.Name)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<City?> GetCityByName(string name)
+    {
+        return await _context.Cities.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
     }
 }

@@ -20,6 +20,10 @@ export class ProfileService {
     return this.http.get(`${this.apiUrl}/me`);
   }
 
+  updateMyProfile(payload: { identityNumber: string, phoneNumber: string, gender: string}): Observable<any> {
+    return this.http.put(`${this.apiUrl}/edit-personal-info`, payload);
+  }
+
   checkoutTicket(payload: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/checkout`, payload);
   }

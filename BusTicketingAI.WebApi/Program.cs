@@ -26,7 +26,7 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var jwtSecret = builder.Configuration["JwtSettings:Secret"];
 builder.Services.AddAuthentication(options =>

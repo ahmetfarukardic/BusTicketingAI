@@ -2,6 +2,7 @@
 using BusTicketingAI.Application.Features.Tickets.Commands.CheckoutTicket;
 using BusTicketingAI.Application.Features.Tickets.Commands.LockSeats;
 using BusTicketingAI.Application.Features.Tickets.Queries.GetPassengerTicket;
+using BusTicketingAI.Application.Features.Users.Commands.UpdateMyProfile;
 using BusTicketingAI.Application.Features.Users.Queries.GetUserProfile;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,25 @@ public class ProfileController : ControllerBase
         var userId = Guid.Parse(userIdClaim);
         var response = await _mediator.Send(new GetUserProfileQuery(userId));
         return Ok(response);
+    }
+
+    [HttpPut("edit-personal-info")]
+    public async Task<IActionResult> EditPersonalInfo([FromBody] EditPersonalInfoDto request)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim))
+            return Unauthorized("Kullanıcı kimliği doğrulanamadı.");
+
+        var userId = Guid.Parse(userIdClaim);
+
+        var command = new UpdateUserProfileCommand(userId, request.IdentityNumber, request.PhoneNumber, request.Gender);
+
+        var (IsSuccess, Message) = await _mediator.Send(command);
+
+        if (!IsSuccess)
+            return BadRequest(new { Message });
+
+        return Ok(new {  Message });
     }
 
     [HttpPost("lock-seats")]

@@ -7,10 +7,12 @@ import { ButtonModule } from 'primeng/button';
 import { ProfileService } from '../../services/profile.service';
 import { AlertService } from '../../services/alert.service';
 import { TicketDetailDto } from '../../core/models/ticket-model';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { first, identity } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, DatePipe, CurrencyPipe, TabsModule, TableModule, TagModule, ButtonModule],
+  imports: [CommonModule, DatePipe, CurrencyPipe, TabsModule, TableModule, TagModule, ButtonModule, ReactiveFormsModule],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
@@ -18,6 +20,10 @@ export class Profile implements OnInit{
   private profileService = inject(ProfileService);
   private alertService = inject(AlertService);
   private cdr = inject(ChangeDetectorRef);
+  private formBuilder = inject(FormBuilder);
+
+  profileForm!: FormGroup;
+  isSaving = signal(false);
 
   activeTickets = signal<TicketDetailDto[]>([]);
   pastTickets = signal<TicketDetailDto[]>([]);
@@ -26,8 +32,39 @@ export class Profile implements OnInit{
   walletTransactions = signal<any[]>([]);
 
   ngOnInit() {
+    this.initForm();
+    this.loadMyProfile();
     this.loadMyTickets();
     this.loadWalletData();
+  }
+
+  initForm() {
+    this.profileForm = this.formBuilder.group({
+      firstName: [{ value: '', disabled: true }], // İsim, soyisim ve mail değiştirilemez
+      lastName: [{ value: '', disabled: true }],
+      email: [{ value: '', disabled: true }],
+      identityNumber: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11), Validators.pattern('^[0-9]*$')]],
+      phoneNumber: ['', [Validators.required]],
+      gender: ['', [Validators.required]]
+    });
+  }
+
+  loadMyProfile() {
+    this.profileService.getMyProfile().subscribe({
+      next: (res) => {
+        this.profileForm.patchValue({
+          firstName: res.firstName,
+          lastName: res.lastName,
+          email: res.email,
+          identityNumber: res.identityNumber,
+          phoneNumber: res.phoneNumber,
+          gender: res.gender
+        });
+      },
+      error: (err) => {
+        this.alertService.error('Hata', "Profil bilgileri alınamadı.");
+      }
+    });
   }
 
   loadWalletData() {
@@ -84,5 +121,32 @@ export class Profile implements OnInit{
       case 0: return 'İptal Edildi';
       default: return 'Geçmiş Sefer';
     }
+  }
+
+  saveProfile() {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      this.alertService.error('Uyarı', 'Lütfen tüm alanları doğru formatta doldurun.');
+      return;
+    }
+
+    this.isSaving.set(true);
+
+    const payload = {
+      identityNumber: this.profileForm.get('identityNumber')?.value,
+      phoneNumber: this.profileForm.get('phoneNumber')?.value,
+      gender: this.profileForm.get('gender')?.value
+    };
+
+    this.profileService.updateMyProfile(payload).subscribe({
+      next: (res) => {
+        this.alertService.success('Başarılı', 'Kişisel bilgileriniz kaydedildi.');
+        this.isSaving.set(false);
+      },
+      error: (err) => {
+        this.alertService.error('Hata', err.error?.message || 'Güncelleme başarısız oldu.');
+        this.isSaving.set(false);
+      }
+    });
   }
 }

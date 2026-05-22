@@ -13,19 +13,85 @@
         
         <p-tablist>
           <p-tab value="0">
-            <i class="pi pi-ticket mr-2"></i> Aktif Biletlerim
+            <i class="pi pi-user-edit mr-2"></i> Kişisel Bilgilerim
           </p-tab>
           <p-tab value="1">
-            <i class="pi pi-history mr-2"></i> Geçmiş Biletlerim
+            <i class="pi pi-ticket mr-2"></i> Aktif Biletlerim
           </p-tab>
           <p-tab value="2">
+            <i class="pi pi-history mr-2"></i> Geçmiş Biletlerim
+          </p-tab>
+          <p-tab value="3">
             <i class="pi pi-wallet mr-2"></i> Cüzdanım
           </p-tab>
         </p-tablist>
 
         <p-tabpanels class="pt-6">
-          
+
           <p-tabpanel value="0">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8">
+              <h3 class="text-xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Profil Bilgilerinizi Güncelleyin</h3>
+              
+              <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-sm text-slate-600">Ad</label>
+                  <input type="text" formControlName="firstName" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed focus:outline-none">
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-sm text-slate-600">Soyad</label>
+                  <input type="text" formControlName="lastName" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed focus:outline-none">
+                </div>
+
+                <div class="flex flex-col gap-2 md:col-span-2">
+                  <label class="font-semibold text-sm text-slate-600">E-Posta Adresi</label>
+                  <input type="email" formControlName="email" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed focus:outline-none">
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-sm text-slate-700">T.C. Kimlik Numarası <span class="text-rose-500">*</span></label>
+                  <input type="text" formControlName="identityNumber" placeholder="11 haneli T.C. Kimlik numaranız" maxlength="11" 
+                    class="p-3 bg-white border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-colors"
+                    [ngClass]="{'border-rose-500': profileForm.get('identityNumber')?.invalid && profileForm.get('identityNumber')?.touched, 'border-slate-300': !(profileForm.get('identityNumber')?.invalid && profileForm.get('identityNumber')?.touched)}">
+                  @if (profileForm.get('identityNumber')?.invalid && profileForm.get('identityNumber')?.touched) {
+                    <small class="text-rose-500 font-medium mt-1">Geçerli bir 11 haneli T.C. numarası giriniz.</small>
+                  }
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-sm text-slate-700">Telefon Numarası <span class="text-rose-500">*</span></label>
+                  <input type="text" formControlName="phoneNumber" placeholder="Örn: 05XX XXX XX XX" 
+                    class="p-3 bg-white border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-colors"
+                    [ngClass]="{'border-rose-500': profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched, 'border-slate-300': !(profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched)}">
+                </div>
+
+                <div class="flex flex-col gap-2 md:col-span-2">
+                  <label class="font-semibold text-sm text-slate-700">Cinsiyet <span class="text-rose-500">*</span></label>
+                  <select formControlName="gender" 
+                    class="p-3 bg-white border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-colors appearance-none cursor-pointer"
+                    [ngClass]="{'border-rose-500': profileForm.get('gender')?.invalid && profileForm.get('gender')?.touched, 'border-slate-300': !(profileForm.get('gender')?.invalid && profileForm.get('gender')?.touched)}">
+                    <option value="" disabled selected>Cinsiyetinizi Seçin</option>
+                    <option value="Erkek">Erkek</option>
+                    <option value="Kadın">Kadın</option>
+                  </select>
+                </div>
+
+                <div class="md:col-span-2 flex justify-end mt-4">
+                  <button type="submit" [disabled]="isSaving()" class="bg-brand hover:bg-brand-hover text-white font-bold py-3 px-8 rounded-xl transition-colors flex items-center gap-2 shadow-md disabled:opacity-70 disabled:cursor-not-allowed">
+                    @if (isSaving()) {
+                      <i class="pi pi-spin pi-spinner"></i> Kaydediliyor...
+                    } @else {
+                      <i class="pi pi-save"></i> Değişiklikleri Kaydet
+                    }
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </p-tabpanel>
+          
+          <p-tabpanel value="1">
             @if (activeTickets().length === 0) {
               <div class="flex flex-col items-center justify-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                 <i class="pi pi-ticket text-6xl text-slate-300 mb-4"></i>
@@ -70,7 +136,7 @@
             }
           </p-tabpanel>
 
-          <p-tabpanel value="1">
+          <p-tabpanel value="2">
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
               <p-table [value]="pastTickets()" [paginator]="true" [rows]="5" styleClass="p-datatable-striped p-datatable-sm md:p-datatable-lg">
                 <ng-template pTemplate="header">
@@ -102,7 +168,7 @@
             </div>
           </p-tabpanel>
 
-          <p-tabpanel value="2">
+          <p-tabpanel value="3">
             <div class="bg-gradient-to-br from-emerald-400 to-emerald-600 p-8 md:p-10 rounded-3xl text-white mb-8 flex justify-between items-center shadow-lg shadow-emerald-500/30 relative overflow-hidden">
               <div class="relative z-10">
                 <p class="text-emerald-50 font-medium mb-1 text-lg">Güncel Cüzdan Bakiyeniz</p>

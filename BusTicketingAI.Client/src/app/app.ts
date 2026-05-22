@@ -4,11 +4,12 @@ import { Navbar } from './components/navbar/navbar';
 import { every, filter } from 'rxjs';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { Chat } from './components/chat/chat';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, ConfirmDialogModule, ToastModule],
+  imports: [RouterOutlet, Navbar, ConfirmDialogModule, ToastModule, Chat],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

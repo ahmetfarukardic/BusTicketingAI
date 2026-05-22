@@ -1,0 +1,64 @@
+<button 
+  class="fixed bottom-6 right-6 w-16 h-16 bg-brand hover:bg-brand-hover text-white rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-105 z-50"
+  (click)="toggleChat()">
+  <i class="pi" [ngClass]="isOpen() ? 'pi-times text-2xl' : 'pi-comments text-3xl'"></i>
+</button>
+
+@if (isOpen()) {
+  <div class="fixed bottom-28 right-6 w-80 md:w-96 bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col z-50 overflow-hidden animate-fadein" style="height: 500px;">
+    
+    <div class="bg-brand text-white p-4 flex items-center gap-3 shrink-0">
+      <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+        <i class="pi pi-sparkles text-xl"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-lg m-0">AI Asistan</h3>
+        <p class="text-brand-100 text-xs m-0">Bilet ve sefer sorgulama</p>
+      </div>
+    </div>
+
+    <div class="flex-1 p-4 overflow-y-auto bg-slate-50 flex flex-col gap-4 custom-scrollbar" #scrollMe>
+      @for (msg of messages(); track $index) {
+        
+        <div class="flex" [ngClass]="msg.isBot ? 'justify-start' : 'justify-end'">
+          <div 
+            class="max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed shadow-sm"
+            [ngClass]="msg.isBot ? 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm' : 'bg-brand text-white rounded-tr-sm'">
+            {{ msg.text }}
+          </div>
+        </div>
+
+      }
+
+      @if (isLoading()) {
+        <div class="flex justify-start">
+          <div class="bg-white border border-slate-100 p-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-2">
+            <i class="pi pi-spin pi-spinner text-brand"></i>
+            <span class="text-xs text-slate-500 font-medium">Asistan düşünüyor...</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="p-3 bg-white border-t border-slate-100 shrink-0">
+      <div class="relative">
+        <input 
+          type="text" 
+          [ngModel]="userInput()" 
+          (ngModelChange)="userInput.set($event)"
+          (keydown.enter)="sendMessage()"
+          placeholder="Bir mesaj yazın..." 
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-colors"
+          [disabled]="isLoading()">
+        
+        <button 
+          class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-brand hover:bg-brand/10 rounded-lg transition-colors"
+          (click)="sendMessage()"
+          [disabled]="isLoading() || !userInput().trim()">
+          <i class="pi pi-send font-bold"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+}
