@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, Signal, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
 import { TripService } from '../../services/trip.service';
@@ -43,6 +43,8 @@ export class Seats implements OnInit {
   isGenderModalOpen = signal<boolean>(false);
   pendingSeatSelection: Seat | null = null;
 
+  autoSelectSeats: { seatNumber: number, gender: 'E' | 'K' }[] = [];
+
   ngOnInit() {
     this.tripId = this.route.snapshot.paramMap.get('id');
     if (this.tripId) {
@@ -73,6 +75,60 @@ export class Seats implements OnInit {
         gender: occupiedSeat?.gender
       });
     }
+    
+    const storedSeats = sessionStorage.getItem('autoSelectSeats');
+    if (storedSeats) {
+      this.autoSelectSeats = JSON.parse(storedSeats);
+      sessionStorage.removeItem('autoSelectSeats'); 
+      this.processAutoSelection();
+    }
+  }
+
+  processAutoSelection() {
+    const tempSelected: { seatNumber: number, gender: 'E' | 'K' }[] = [];
+
+    for (const autoSeat of this.autoSelectSeats) {
+      const seatNum = Number(autoSeat.seatNumber);
+      const seat = this.seats.find(s => s.number === seatNum);
+
+      if (!seat || seat.status === 'occupied') {
+        this.alertService.error('Hata', `${seatNum} numaralı koltuk kısa süre önce dolmuş. Lütfen Asistan'dan yeni bir öneri isteyin veya ekrandan seçin.`);
+        
+        this.autoSelectSeats = [];
+        this.selectedSeats.set([]); 
+        this.seats.forEach(s => { if (s.status === 'selected') { s.status = 'available'; s.gender = undefined; } });
+        return; 
+      }
+
+      const neighborNumber = this.getNeighborSeatNumber(seatNum, this.busLayout);
+      const neighborSeat = neighborNumber ? this.seats.find(s => s.number === neighborNumber) : null;
+
+      if (neighborSeat && neighborSeat.status === 'occupied' && neighborSeat.gender) {
+        if (neighborSeat.gender !== autoSeat.gender) {
+          this.alertService.error('Kural İhlali', `${seatNum} numaralı koltuğun yanındaki yolcuyla cinsiyetiniz uyuşmuyor.`);
+          
+          this.autoSelectSeats = [];
+          this.selectedSeats.set([]);
+          this.seats.forEach(s => { if (s.status === 'selected') { s.status = 'available'; s.gender = undefined; } });
+          return;
+        }
+      }
+    }
+
+    for (const autoSeat of this.autoSelectSeats) {
+      const seatNum = Number(autoSeat.seatNumber);
+      const seat = this.seats.find(s => s.number === seatNum);
+      
+      if (seat) {
+        seat.status = 'selected';
+        seat.gender = autoSeat.gender;
+        tempSelected.push({ seatNumber: seatNum, gender: autoSeat.gender });
+      }
+    }
+
+    this.autoSelectSeats = [];
+    this.selectedSeats.set(tempSelected);
+    this.proceedToCheckout(); 
   }
 
   toggleSeat(seat: Seat) {

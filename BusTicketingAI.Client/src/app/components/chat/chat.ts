@@ -3,8 +3,6 @@ import { AfterViewChecked, Component, ElementRef, inject, signal, ViewChild } fr
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { Router } from '@angular/router';
-import { trigger } from '@angular/animations';
-import { generate } from 'rxjs';
 
 interface ChatMessage {
   text: string;
@@ -18,7 +16,7 @@ interface ChatMessage {
   templateUrl: './chat.html',
   styleUrl: './chat.scss',
 })
-export class Chat implements AfterViewChecked{
+export class Chat implements AfterViewChecked {
   private chatService = inject(ChatService);
   private router = inject(Router);
 
@@ -99,6 +97,34 @@ export class Chat implements AfterViewChecked{
               price: parsedData.price
             }
           });
+          this.isOpen.set(false);
+        }, 1500);
+        return;
+      }
+
+      if (parsedData.action === 'NAVIGATE_TO_SEATS') {
+        this.messages.update(m => [...m, {
+          text: "Harika! Koltuklarınızı sizin için ayırıp yolcu bilgileri formuna yönlendiriyorum...",
+          isBot: true
+        }]);
+
+        setTimeout(() => {
+          // KESİN ÇÖZÜM: Veriyi kaybolmasın diye SessionStorage'a yazıyoruz
+          if (parsedData.seats && parsedData.seats.length > 0) {
+            sessionStorage.setItem('autoSelectSeats', JSON.stringify(parsedData.seats));
+          }
+
+          const targetUrl = `/trip/${parsedData.tripId}/seats`;
+
+          // Zaten koltuk sayfasındaysa sayfayı yenilemeye zorla
+          if (this.router.url.includes(targetUrl)) {
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              this.router.navigate([targetUrl]);
+            });
+          } else {
+            this.router.navigate(['/trip', parsedData.tripId, 'seats']);
+          }
+
           this.isOpen.set(false);
         }, 1500);
         return;

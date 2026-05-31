@@ -121,7 +121,7 @@ public class BusBookingPlugin
     }
 
     [KernelFunction("LockSingleSeatForCheckout")]
-    [Description("Kullanıcı TEK BİR KOLTUK seçtiğinde ve profil bilgileri TAM olduğunda, o koltuğu ödeme adımı için kilitler. İşlem başarılı olursa 'Success' döner.")]
+    [Description("DİKKAT KRİTİK KURAL: Bu metodu SADECE VE SADECE kullanıcı TEK BİR (1 adet) koltuk almak istediğinde kullanın. Eğer kullanıcı 2 VEYA DAHA FAZLA koltuk onayladıysa, BU METODU HİÇBİR ŞEKİLDE ÇAĞIRMAYIN! Çoklu koltuklarda kilitlemeyi arayüz (Angular) otonom yapacaktır, sizin kilitlemeniz sistemi bozar ve çökertir.")]
     public async Task<string> LockSingleSeatForCheckoutAsync(
         [Description("Seçilen seferin benzersiz ID'si (Guid)")] string tripId,
         [Description("Seçilen koltuk numarası")] int seatNumber)

@@ -103,6 +103,11 @@ export class Checkout implements OnInit, OnDestroy {
 
   buildPassengerForms(userProfile: any) {
     const seats = this.selectedSeats();
+    let isProfileAssigned = false;
+
+    const userGenderCode = userProfile ? 
+      (userProfile.gender === 'Erkek' || userProfile.gender === 'E' ? 'E' : 'K') 
+      : null;
 
     seats.forEach((seat, index) => {
       const passengerGroup = this.formBuilder.group({
@@ -112,11 +117,12 @@ export class Checkout implements OnInit, OnDestroy {
         tcIdentity: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]]
       });
 
-      if (index === 0 && userProfile){
+      if (!isProfileAssigned && userProfile && seat.gender === userGenderCode) {
         passengerGroup.patchValue({
           fullName: `${userProfile.firstName} ${userProfile.lastName}`.trim(),
           tcIdentity: userProfile.identityNumber || ''
         });
+        isProfileAssigned = true; 
       }
       
       this.passengersFormArray.push(passengerGroup);

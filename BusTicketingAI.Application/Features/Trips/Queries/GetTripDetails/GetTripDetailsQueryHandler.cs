@@ -35,10 +35,38 @@ public class GetTripDetailsQueryHandler : IRequestHandler<GetTripDetailsQuery, T
             occupiedSeats = occupiedSeats.DistinctBy(s => s.SeatNumber).ToList();
         }
 
+        var availableSeats = new List<AvailableSeatDto>();
+        bool is2Plus1 = trip.Bus.SeatCapacity == 30;
+
+        for (int i = 1; i <= trip.Bus.SeatCapacity; i++)
+        {
+            if (!occupiedSeats.Any(s => s.SeatNumber == i))
+            {
+                string description = "";
+
+                if (is2Plus1)
+                {
+                    if (i % 3 == 1) description = "Tekli Koltuk - Cam Kenarı";
+                    else if (i % 3 == 2) description = "Çiftli Koltuk - Koridor";
+                    else if (i % 3 == 0) description = "Çiftli Koltuk - Cam Kenarı";
+                }
+                else
+                {
+                    if (i % 4 == 1) description = "Sol Çiftli - Cam Kenarı";
+                    else if (i % 4 == 2) description = "Sol Çiftli - Koridor";
+                    else if (i % 4 == 3) description = "Sağ Çiftli - Koridor";
+                    else if (i % 4 == 0) description = "Sağ Çiftli - Cam Kenarı";
+                }
+
+                availableSeats.Add(new AvailableSeatDto(i, description));
+            }
+        }
+
         return new TripDetailsResponseDto(
             trip.BasePrice,
             trip.Bus.SeatCapacity,
-            occupiedSeats
+            occupiedSeats,
+            availableSeats
         );
     }
 }
