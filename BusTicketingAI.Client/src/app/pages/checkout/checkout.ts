@@ -117,12 +117,15 @@ export class Checkout implements OnInit, OnDestroy {
         tcIdentity: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]]
       });
 
-      if (!isProfileAssigned && userProfile && seat.gender === userGenderCode) {
-        passengerGroup.patchValue({
-          fullName: `${userProfile.firstName} ${userProfile.lastName}`.trim(),
-          tcIdentity: userProfile.identityNumber || ''
-        });
-        isProfileAssigned = true; 
+      if (!isProfileAssigned && userProfile) {
+        if (seats.length === 1 || seat.gender === userGenderCode) {
+          passengerGroup.patchValue({
+            fullName: `${userProfile.firstName} ${userProfile.lastName}`.trim(),
+            tcIdentity: userProfile.identityNumber || '',
+            gender: userGenderCode
+          });
+          isProfileAssigned = true; 
+        }
       }
       
       this.passengersFormArray.push(passengerGroup);
