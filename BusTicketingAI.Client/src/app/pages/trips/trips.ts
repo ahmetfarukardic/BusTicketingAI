@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TripService } from '../../services/trip.service';
 import { FlatpickrDirective } from '../../directives/flatpickr.directive';
+import { AlertService } from '../../services/alert.service';
 
 
 interface Trip {
@@ -28,6 +29,7 @@ interface Trip {
 export class Trips implements OnInit{
   private router = inject(Router);
   private tripService = inject(TripService);
+  private alertService = inject(AlertService);
 
   tripList: Trip[] = [];
 
@@ -47,7 +49,7 @@ export class Trips implements OnInit{
     this.searchDate = this.minDate;
 
     this.loadCities();
-    this.onSearch();
+    this.onSearch(false);
   }
 
   loadCities() {
@@ -59,10 +61,18 @@ export class Trips implements OnInit{
     });
   }
 
-  onSearch() {
+  onSearch(showWarning: boolean = true) {
     this.tripService.searchTrips(this.searchOriginId, this.searchDestinationId, this.searchDate)
     .subscribe({
       next: (response: any[]) => {
+        if (!response || response.length === 0) {
+          this.tripList = [];
+          if (showWarning) {
+            this.alertService.warning('Sefer Bulunamadı', 'Seçtiğiniz kriterlere uygun sefer bulunmamaktadır.');
+          }
+          return;
+        }
+
         this.tripList = response.map(item => {
           const departureDate = new Date(item.departureTime);
           let arrivalTimeStr = '--:--';
@@ -95,7 +105,10 @@ export class Trips implements OnInit{
           };
         });
       },
-      error: (err) => console.error('Seferler Cekilemedi.', err)
+      error: (err) => {
+        console.error('Seferler Çekilemedi.', err);
+        this.alertService.error('Hata', 'Seferler yüklenirken bir sorun oluştu.');
+      }
     });
   }
 
