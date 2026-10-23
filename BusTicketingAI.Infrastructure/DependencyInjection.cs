@@ -25,12 +25,13 @@ public static class DependencyInjection
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IWalletTransactionRepository, WalletTransactionRepository>();
 
-        var modelId = configuration["OpenAI:ModelId"];
-        var apiKey = configuration["OpenAI:ApiKey"];
+        //var modelId = configuration["OpenAI:ModelId"];
+        //var apiKey = configuration["OpenAI:ApiKey"];
 
-        services.AddKernel().AddOpenAIChatCompletion(modelId, apiKey);
-        services.AddScoped<BusBookingPlugin>();
-        services.AddScoped<IAiAgentService, AiAgentService>();
+        //services.AddKernel().AddOpenAIChatCompletion(modelId, apiKey);
+        //services.AddScoped<BusBookingPlugin>();
+        //services.AddScoped<IAiAgentService, AiAgentService>();
+        services.AddScoped<IAiAgentService, MockAiAgentService>();
 
         return services;
     }
