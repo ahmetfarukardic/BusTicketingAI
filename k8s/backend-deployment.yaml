@@ -18,6 +18,8 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
         - name: ConnectionStrings__DefaultConnection
           value: "Server=mssql-service;Database=BusTicketingDb;User Id=sa;Password=CokGucluSifre123!;TrustServerCertificate=True;MultipleActiveResultSets=true"
 ---
