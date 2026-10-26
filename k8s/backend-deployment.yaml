@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      labels:
+        app: backend-api
+    spec:
+      containers:
+      - name: backend-api
+        image: ahmet377/busticketingai-backend-api:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ConnectionStrings__DefaultConnection
+          value: "Server=mssql-service;Database=BusTicketingDb;User Id=sa;Password=CokGucluSifre123!;TrustServerCertificate=True;MultipleActiveResultSets=true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
