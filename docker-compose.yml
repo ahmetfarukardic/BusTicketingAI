@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # 1. SQL Server
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=CokGucluSifre123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+
+  # 2. .NET Backend API
+  backend-api:
+    build: 
+      context: . 
+      dockerfile: ./BusTicketingAI.WebApi/Dockerfile
+    container_name: backend-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mssql-db;Database=BusTicketingDB;User Id=sa;Password=CokGucluSifre123!;TrustServerCertificate=True;
+    depends_on:
+      - mssql-db
+
+  # 3. Angular Frontend
+  frontend-ui:
+    build:
+      context: ./BusTicketingAI.Client
+      dockerfile: Dockerfile
+    container_name: frontend-ui
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend-api

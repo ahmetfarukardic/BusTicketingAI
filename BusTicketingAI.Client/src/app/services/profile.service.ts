@@ -2,15 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PassengerTicketResponseDto } from '../core/models/ticket-model';
-import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7202/api/profile';
-  private walletUrl = 'https://localhost:7202/api/wallets';
+  private apiUrl = `${environment.apiUrl}/profile`;
+  private walletUrl = `${environment.apiUrl}/wallets`;
 
   getMyTickets(): Observable<PassengerTicketResponseDto> {
     return this.http.get<PassengerTicketResponseDto>(this.apiUrl);

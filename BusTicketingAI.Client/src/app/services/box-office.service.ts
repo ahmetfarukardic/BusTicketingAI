@@ -2,15 +2,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CompanyActiveTrip, SellTicketRequest, Terminal } from '../core/models/box-office.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoxOfficeService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7202/api/companystaff';
-  private terminalsUrl = 'https://localhost:7202/api/terminals';
-  private ticketsApiUrl = 'https://localhost:7202/api/tickets';
+  private apiUrl = `${environment.apiUrl}/companystaff`;
+  private terminalsUrl = `${environment.apiUrl}/terminals`;
+  private ticketsApiUrl = `${environment.apiUrl}/tickets`;
 
   getTerminals(): Observable<Terminal[]> {
     return this.http.get<Terminal[]>(this.terminalsUrl)

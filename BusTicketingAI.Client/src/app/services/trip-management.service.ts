@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { Bus, CreateTripRequest, UpdateTripTimeRequest } from '../core/models/bus';
 import { CreateBusRequest } from '../core/models/create-bus-request';
 import { Passenger } from '../core/models/passenger';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripManagementService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7202/api/companystaff';
+  private apiUrl = `${environment.apiUrl}/companystaff`;
 
   getCompanyBuses(): Observable<Bus[]> {
     return this.http.get<Bus[]>(`${this.apiUrl}/buses`);

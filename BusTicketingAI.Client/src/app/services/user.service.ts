@@ -1,14 +1,15 @@
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7202/api/users';
-  private walletApiUrl = 'https://localhost:7202/api/wallets';
+  private apiUrl = `${environment.apiUrl}/users`;
+  private walletApiUrl = `${environment.apiUrl}/wallets`;
 
   getUsers(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
