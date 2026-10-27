@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-api
-        image: ahmet377/busticketingai-backend-api:820f44b
+        image: ahmet377/busticketingai-backend-api:332ca00
         ports:
         - containerPort: 8080
         env:
